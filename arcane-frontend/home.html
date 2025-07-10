@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arcane Downloads - Fantasy Software Portal</title>
+    <link rel="icon" type="image/png" href="assets/castle.png">
+    <style>
+      /* Dark Fantasy Blue Color Palette */
+      :root {
+        --dark-blue: #0a0e23;
+        --deep-blue: #121a3a;
+        --mystic-blue: #1a2a57;
+        --crystal-blue: #2a3a7a;
+        --glow-blue: #4a5a9a;
+        --light-blue: #7a8aba;
+        --pale-blue: #aabada;
+        --gold: #d4af37;
+        --silver: #c0c0c0;
+
+        /* Fantasy icon colors */
+        --spellbook-color: #9c27b0; /* Purple */
+        --crystal-color: #00bcd4; /* Cyan */
+        --alchemy-color: #ff9800; /* Orange */
+        --dragon-color: #f44336; /* Red */
+        --rune-color: #4caf50; /* Green */
+        --enchanted-color: #2196f3; /* Blue */
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Georgia", serif;
+      }
+
+      body {
+        background-color: var(--dark-blue);
+        color: var(--pale-blue);
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      /* Cursor Following Animation */
+      .cursor-follower {
+        position: fixed;
+        width: 40px;
+        height: 40px;
+        border: 2px solid var(--glow-blue);
+        border-radius: 50%;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        mix-blend-mode: screen;
+        transition: transform 0.1s ease-out, width 0.3s ease, height 0.3s ease;
+        box-shadow: 0 0 15px var(--glow-blue), inset 0 0 10px var(--glow-blue);
+      }
+
+      .cursor-follower.active {
+        width: 80px;
+        height: 80px;
+        background-color: rgba(74, 90, 154, 0.2);
+      }
+
+      /* Particle style for crystal shape */
+      .particle {
+        position: absolute;
+        width: 8px; /* Slightly larger for crystal look */
+        height: 8px; /* Slightly larger for crystal look */
+        background-color: transparent; /* Background for shadow */
+        pointer-events: none;
+        z-index: 9998;
+        opacity: 0.7;
+        transform: rotate(45deg); /* Diamond shape */
+        transition: transform 0.2s ease-out, opacity 0.5s ease-out;
+        box-shadow: 0 0 8px currentColor, inset 0 0 4px currentColor; /* Glowing effect */
+      }
+
+      /* Particle colors (using existing theme colors) */
+      .particle-spellbook {
+        color: var(--spellbook-color);
+      }
+      .particle-crystal {
+        color: var(--crystal-color);
+      }
+      .particle-alchemy {
+        color: var(--alchemy-color);
+      }
+      .particle-dragon {
+        color: var(--dragon-color);
+      }
+      .particle-rune {
+        color: var(--rune-color);
+      }
+      .particle-enchanted {
+        color: var(--enchanted-color);
+      }
+
+      /* Header Styles */
+      header {
+        background: linear-gradient(
+          to right,
+          var(--deep-blue),
+          var(--mystic-blue)
+        );
+        padding: 1rem 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        position: relative;
+        z-index: 100;
+        width: 100%; /* Ensure header spans full width */
+      }
+
+      .header-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .logo h1 {
+        color: var(--gold);
+        font-size: 1.8rem;
+        text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        letter-spacing: 1px;
+      }
+
+      .logo img {
+        width: 50px;
+        height: 50px;
+        filter: drop-shadow(0 0 5px var(--gold));
+      }
+
+      nav ul {
+        display: flex;
+        list-style: none;
+        gap: 2rem;
+      }
+
+      nav a {
+        color: var(--pale-blue);
+        text-decoration: none;
+        font-size: 1.1rem;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      nav a:hover {
+        color: var(--gold);
+        background-color: rgba(26, 42, 87, 0.5);
+      }
+
+      nav a::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background: var(--gold);
+        transition: all 0.3s ease;
+      }
+
+      nav a:hover::after {
+        width: 100%;
+        left: 0;
+      }
+
+      /* Hero Section */
+      .hero {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+        width: 100%; /* Ensure hero spans full width */
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at center,
+          transparent,
+          var(--dark-blue) 70%
+        );
+        z-index: 1;
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 800px;
+      }
+
+      .hero h2 {
+        font-size: 3rem;
+        color: var(--gold);
+        margin-bottom: 1.5rem;
+        text-shadow: 0 0 15px rgba(212, 175, 55, 0.7);
+      }
+
+      .hero p {
+        font-size: 1.2rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+      }
+
+      .cta-button {
+        display: inline-block;
+        padding: 0.8rem 2rem;
+        background: linear-gradient(
+          to right,
+          var(--mystic-blue),
+          var(--crystal-blue)
+        );
+        color: var(--pale-blue);
+        text-decoration: none;
+        border-radius: 30px;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        border: 1px solid var(--glow-blue);
+        box-shadow: 0 0 15px rgba(42, 58, 122, 0.5);
+      }
+
+      .cta-button:hover {
+        background: linear-gradient(
+          to right,
+          var(--crystal-blue),
+          var(--glow-blue)
+        );
+        transform: translateY(-3px);
+        box-shadow: 0 0 25px rgba(42, 58, 122, 0.8);
+        color: white;
+      }
+
+      /* Software Section */
+      .software-section {
+        padding: 4rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%; /* Ensure section spans full width */
+      }
+
+      .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+        position: relative;
+      }
+
+      .section-title h2 {
+        font-size: 2.5rem;
+        color: var(--gold);
+        display: inline-block;
+        padding-bottom: 1rem;
+      }
+
+      .section-title h2::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(
+          to right,
+          var(--gold),
+          var(--light-blue),
+          var(--gold)
+        );
+        border-radius: 3px;
+      }
+
+      .software-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        justify-content: center; /* Center grid items */
+      }
+
+      .software-card {
+        background: linear-gradient(
+          to bottom right,
+          var(--deep-blue),
+          var(--mystic-blue)
+        );
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--glow-blue);
+        position: relative;
+        z-index: 2;
+        display: flex; /* Added for flex column layout */
+        flex-direction: column; /* Added for flex column layout */
+        text-align: center; /* Center content within card */
+      }
+
+      .software-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4),
+          0 0 20px rgba(74, 90, 154, 0.3);
+      }
+
+      .card-icon {
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .icon-container {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 60px;
+        box-shadow: 0 0 20px currentColor;
+        transition: all 0.3s ease;
+        overflow: hidden; /* Ensure image is clipped to circle */
+      }
+
+      /* Style for image inside icon-container */
+      .icon-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Cover the container, cropping if necessary */
+        border-radius: 50%; /* Make image circular */
+        transition: transform 0.3s ease;
+      }
+
+      .software-card:hover .icon-container {
+        transform: scale(1.1) rotate(10deg);
+        box-shadow: 0 0 30px currentColor;
+      }
+      /* Ensure image also scales on hover */
+      .software-card:hover .icon-container img {
+        transform: scale(1.1); /* Slightly larger scale for image on hover */
+      }
+
+      /* Dynamic icon colors based on 'color' property from data */
+      .spellbook-icon {
+        color: var(--spellbook-color);
+        background: rgba(156, 39, 176, 0.1);
+      }
+
+      .crystal-icon {
+        color: var(--crystal-color);
+        background: rgba(0, 188, 212, 0.1);
+      }
+
+      .alchemy-icon {
+        color: var(--alchemy-color);
+        background: rgba(255, 152, 0, 0.1);
+      }
+
+      .dragon-icon {
+        color: var(--dragon-color);
+        background: rgba(244, 67, 54, 0.1);
+      }
+
+      .rune-icon {
+        color: var(--rune-color);
+        background: rgba(76, 175, 80, 0.1);
+      }
+
+      .enchanted-icon {
+        color: var(--enchanted-color);
+        background: rgba(33, 150, 243, 0.1);
+      }
+
+      /* New dynamic icon colors for newly added options */
+      .magic-icon {
+        /* Assuming 'magic' color maps to enchanted for general magic items */
+        color: var(--enchanted-color);
+        background: rgba(33, 150, 243, 0.1);
+      }
+      .gem-icon {
+        /* Reusing crystal color for gem */
+        color: var(--crystal-color);
+        background: rgba(0, 188, 212, 0.1);
+      }
+      .bottle-droplet-icon {
+        /* Reusing alchemy color for bottle-droplet */
+        color: var(--alchemy-color);
+        background: rgba(255, 152, 0, 0.1);
+      }
+      .fire-icon {
+        /* Reusing dragon color for fire */
+        color: var(--dragon-color);
+        background: rgba(244, 67, 54, 0.1);
+      }
+      .shield-halved-icon {
+        /* Reusing rune color for shield */
+        color: var(--rune-color);
+        background: rgba(76, 175, 80, 0.1);
+      }
+      .sparkles-icon {
+        color: var(--enchanted-color);
+        background: rgba(33, 150, 243, 0.1);
+      }
+
+      .card-content {
+        padding: 1.5rem;
+        flex-grow: 1; /* Allow content to grow and push download button to bottom */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* Distribute space between elements */
+      }
+
+      .card-content h3 {
+        color: var(--gold);
+        margin-bottom: 0.5rem;
+        font-size: 1.5rem;
+      }
+
+      .card-content p {
+        margin-bottom: 1.5rem;
+        line-height: 1.5;
+      }
+
+      .download-btn {
+        display: inline-flex; /* Use flex for icon and text alignment */
+        align-items: center;
+        justify-content: center; /* Center content within button */
+        padding: 0.8rem 1.8rem;
+        background: linear-gradient(
+          to right,
+          var(--mystic-blue),
+          var(--crystal-blue)
+        );
+        color: white;
+        text-decoration: none;
+        border-radius: 8px; /* Slightly more rounded corners */
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        margin-top: auto; /* Push button to the bottom */
+        width: fit-content; /* Ensure button only takes content width */
+        margin-left: auto; /* Center button */
+        margin-right: auto; /* Center button */
+      }
+
+      .download-btn:hover {
+        background: linear-gradient(
+          to right,
+          var(--crystal-blue),
+          var(--glow-blue)
+        );
+        transform: translateY(-3px) scale(1.05); /* Add scale effect on hover */
+        box-shadow: 0 8px 25px rgba(42, 58, 122, 0.7);
+      }
+
+      .download-btn i {
+        margin-right: 0.8rem; /* Space between icon and text */
+        font-size: 1.2rem;
+      }
+
+      .no-download-link {
+        color: var(--dragon-color); /* Reddish color for unavailable link */
+        font-size: 0.9em;
+        margin-top: auto; /* Push message to the bottom */
+        padding-top: 1rem; /* Space above message */
+      }
+
+      /* About and Contact Sections */
+      .info-section {
+        padding: 4rem 2rem;
+        max-width: 1000px;
+        margin: 0 auto;
+        text-align: center;
+        width: 100%; /* Ensure section spans full width */
+      }
+
+      .info-section p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+      }
+
+      .info-section ul {
+        list-style: none;
+        padding: 0;
+        margin-top: 1.5rem;
+        display: inline-block; /* To center the list */
+        text-align: left;
+      }
+
+      .info-section ul li {
+        margin-bottom: 0.8rem;
+        font-size: 1.1rem;
+        color: var(--light-blue);
+      }
+
+      .info-section ul li::before {
+        content: "✨ "; /* Fantasy bullet point */
+        color: var(--gold);
+        font-weight: bold;
+        display: inline-block;
+        width: 1.5em;
+        margin-left: -1.5em;
+      }
+
+      .contact-form {
+        background: linear-gradient(
+          to bottom right,
+          var(--deep-blue),
+          var(--mystic-blue)
+        );
+        padding: 2.5rem;
+        border-radius: 10px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--glow-blue);
+        max-width: 600px;
+        margin: 2rem auto 0;
+        text-align: left;
+      }
+
+      .contact-form label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--gold);
+        font-size: 1.1rem;
+      }
+
+      .contact-form input[type="text"],
+      .contact-form input[type="email"],
+      .contact-form textarea {
+        width: calc(100% - 20px);
+        padding: 0.8rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid var(--crystal-blue);
+        border-radius: 5px;
+        background-color: var(--dark-blue);
+        color: var(--pale-blue);
+        font-size: 1rem;
+        box-shadow: inset 0 0 5px rgba(42, 58, 122, 0.3);
+      }
+
+      .contact-form input[type="text"]:focus,
+      .contact-form input[type="email"]:focus,
+      .contact-form textarea:focus {
+        outline: none;
+        border-color: var(--glow-blue);
+        box-shadow: 0 0 10px rgba(74, 90, 154, 0.5);
+      }
+
+      .contact-form textarea {
+        resize: vertical;
+        min-height: 120px;
+      }
+
+      .contact-form button {
+        display: inline-block;
+        padding: 0.8rem 2.5rem;
+        background: linear-gradient(
+          to right,
+          var(--mystic-blue),
+          var(--crystal-blue)
+        );
+        color: var(--pale-blue);
+        text-decoration: none;
+        border-radius: 30px;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        border: 1px solid var(--glow-blue);
+        box-shadow: 0 0 15px rgba(42, 58, 122, 0.5);
+        cursor: pointer;
+        width: auto;
+      }
+
+      .contact-form button:hover {
+        background: linear-gradient(
+          to right,
+          var(--crystal-blue),
+          var(--glow-blue)
+        );
+        transform: translateY(-3px);
+        box-shadow: 0 0 25px rgba(42, 58, 122, 0.8);
+        color: white;
+      }
+
+      /* Footer */
+      footer {
+        background: linear-gradient(
+          to right,
+          var(--deep-blue),
+          var(--mystic-blue)
+        );
+        padding: 2rem;
+        text-align: center;
+        margin-top: 3rem;
+        position: relative;
+        z-index: 2;
+        width: 100%; /* Ensure footer spans full width */
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .footer-logo {
+        font-size: 1.8rem;
+        color: var(--gold);
+        margin-bottom: 1rem;
+        display: inline-block;
+      }
+
+      .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+      }
+
+      .footer-links a {
+        color: var(--pale-blue);
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .footer-links a:hover {
+        color: var(--gold);
+      }
+
+      .copyright {
+        color: var(--light-blue);
+        font-size: 0.9rem;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .header-container {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        nav ul {
+          gap: 1rem;
+        }
+
+        .hero h2 {
+          font-size: 2.2rem;
+        }
+
+        .hero p {
+          font-size: 1rem;
+        }
+
+        .software-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .section-title h2 {
+          font-size: 2rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        nav ul {
+          flex-direction: column;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .hero h2 {
+          font-size: 1.8rem;
+        }
+
+        .cursor-follower {
+          width: 30px;
+          height: 30px;
+        }
+
+        .cursor-follower.active {
+          width: 60px;
+          height: 60px;
+        }
+      }
+
+      /* Fantasy Decorative Elements */
+      .moon {
+        position: absolute;
+        top: 5%;
+        right: 10%;
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(
+          circle at 30% 30%,
+          white,
+          var(--pale-blue) 60%
+        );
+        border-radius: 50%;
+        box-shadow: 0 0 40px var(--pale-blue);
+        opacity: 0.3;
+        z-index: 0;
+      }
+
+      .stars {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .star {
+        position: absolute;
+        background-color: white;
+        border-radius: 50%;
+        animation: twinkle 2s infinite alternate;
+      }
+
+      @keyframes twinkle {
+        0% {
+          opacity: 0.2;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      .floating-crystal {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        background: rgba(122, 138, 186, 0.2);
+        border: 1px solid var(--light-blue);
+        transform: rotate(45deg);
+        animation: float 6s ease-in-out infinite;
+        z-index: 0;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: rotate(45deg) translateY(0);
+        }
+        50% {
+          transform: rotate(45deg) translateY(-20px);
+        }
+      }
+
+      .crystal-1 {
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+      }
+
+      .crystal-2 {
+        bottom: 15%;
+        right: 15%;
+        animation-delay: 1s;
+      }
+
+      .crystal-3 {
+        top: 40%;
+        right: 20%;
+        animation-delay: 2s;
+      }
+
+      /* Floating Fantasy Icons */
+      .floating-icon {
+        position: fixed;
+        font-size: 24px;
+        opacity: 0.3;
+        z-index: 1;
+        pointer-events: none;
+        animation: float-icon linear infinite;
+        text-shadow: 0 0 10px currentColor;
+        filter: drop-shadow(0 0 5px currentColor);
+      }
+
+      @keyframes float-icon {
+        0% {
+          transform: translateY(100vh) translateX(0) rotate(0deg);
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.5;
+        }
+        90% {
+          opacity: 0.5;
+        }
+        100% {
+          transform: translateY(-100px) translateX(100px) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      /* Assign different animations and colors to each icon type */
+      .floating-icon.spell {
+        color: var(--spellbook-color);
+        animation-duration: 40s;
+        animation-delay: 0s;
+      }
+
+      .floating-icon.crystal {
+        color: var(--crystal-color);
+        animation-duration: 45s;
+        animation-delay: 5s;
+      }
+
+      .floating-icon.potion {
+        color: var(--alchemy-color);
+        animation-duration: 50s;
+        animation-delay: 10s;
+      }
+
+      .floating-icon.dragon {
+        color: var(--dragon-color);
+        animation-duration: 35s;
+        animation-delay: 15s;
+      }
+
+      .floating-icon.rune {
+        color: var(--rune-color);
+        animation-duration: 55s;
+        animation-delay: 20s;
+      }
+
+      .floating-icon.magic {
+        color: var(--enchanted-color);
+        animation-duration: 60s;
+        animation-delay: 25s;
+      }
+
+      /* Modal Styles */
+      .modal-overlay {
+        display: none; /* Hidden by default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(5px);
+        z-index: 10000;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .modal-overlay.active {
+        display: flex;
+        opacity: 1;
+      }
+
+      .modal-content {
+        background: linear-gradient(
+          to bottom right,
+          var(--deep-blue),
+          var(--mystic-blue)
+        );
+        border-radius: 15px;
+        box-shadow: 0 0 40px rgba(74, 90, 154, 0.7);
+        border: 2px solid var(--glow-blue);
+        padding: 2.5rem;
+        max-width: 800px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        color: var(--pale-blue);
+        position: relative;
+        transform: scale(0.8);
+        opacity: 0;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+      }
+
+      .modal-overlay.active .modal-content {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      .modal-content h3 {
+        color: var(--gold);
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+      }
+
+      .modal-content p {
+        margin-bottom: 1rem;
+        line-height: 1.6;
+        font-size: 1rem;
+      }
+
+      .modal-close-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1.5rem;
+        background: none;
+        border: none;
+        font-size: 2rem;
+        color: var(--pale-blue);
+        cursor: pointer;
+        transition: color 0.3s ease;
+      }
+
+      .modal-close-btn:hover {
+        color: var(--gold);
+      }
+
+      .modal-policy-title {
+        color: var(--gold);
+        font-size: 1.3rem;
+        margin-top: 1.5rem;
+        margin-bottom: 0.8rem;
+        border-bottom: 1px solid var(--light-blue);
+        padding-bottom: 0.5rem;
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="cursor-follower"></div>
+    <div class="stars" id="stars"></div>
+
+    <div class="moon"></div>
+
+    <div class="floating-crystal crystal-1"></div>
+    <div class="floating-crystal crystal-2"></div>
+    <div class="floating-crystal crystal-3"></div>
+
+    <header>
+      <div class="header-container">
+        <div class="logo">
+          <img src="assets/castle.png" alt="Arcane Logo" />
+          <h1>Arcane Downloads</h1>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#software">Software</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <section class="hero" id="home">
+      <div class="hero-content">
+        <h2>Unlock Magical Software</h2>
+        <p>
+          Discover powerful tools and applications from the arcane realm.
+          Download enchanted software crafted with mystical precision to enhance
+          your digital journey.
+        </p>
+        <a href="#software" class="cta-button">Explore Downloads</a>
+      </div>
+    </section>
+
+    <section class="software-section" id="software">
+      <div class="section-title">
+        <h2>Software Collection</h2>
+      </div>
+      <div class="software-grid" id="softwareGrid">
+        <p style="text-align: center; color: var(--light-blue)">
+          Loading arcane artifacts...
+        </p>
+      </div>
+    </section>
+
+    <section class="info-section" id="about">
+      <div class="section-title">
+        <h2>The Arcane Scriptorium</h2>
+      </div>
+      <p>
+        Welcome, seeker of the digital arcane! Arcane Downloads is a mystical
+        portal dedicated to providing you with enchanted software and tools. We
+        delve into unseen realms to uncover rare and powerful applications,
+        meticulously crafted with ancient code and potent spells.
+      </p>
+      <p>
+        Our mission is to empower your digital journey with artifacts that
+        transcend the mundane. Each download is imbued with purity, ensuring a
+        seamless and transformative experience. We are the guardians of digital
+        lore, offering a sanctuary for those who seek extraordinary solutions.
+      </p>
+      <ul>
+        <li>
+          Rare Enchantments: Discover unique software imbued with special
+          properties.
+        </li>
+        <li>
+          Guaranteed Purity: All downloads are free from malign spirits and
+          digital curses.
+        </li>
+        <li>
+          Seeker's Sanctuary: A safe haven for explorers of the digital unknown.
+        </li>
+        <li>
+          Constant Revelation: New mystical tools are added to our collection
+          regularly.
+        </li>
+      </ul>
+    </section>
+
+    <section class="info-section" id="contact">
+      <div class="section-title">
+        <h2>Commune with the Conclave</h2>
+      </div>
+      <p>
+        Should you possess inquiries, seek guidance, or wish to share ancient
+        wisdom, do not hesitate to contact the Conclave. Our scribes and mages
+        are ever ready to assist those who traverse the digital plains.
+      </p>
+      <div class="contact-form">
+        <form
+          action="https://formspree.io/f/mnnvnwnp"
+          method="POST"
+          id="contact-form"
+        >
+          <label for="name">Your Name (or Incantation):</label>
+          <input type="text" id="name" name="name" required />
+
+          <label for="email">Your Scrying Orb Address (Email):</label>
+          <input type="email" id="email" name="email" required />
+
+          <label for="message">Your Message (or Vision):</label>
+          <textarea id="message" name="message" required></textarea>
+
+          <button type="submit" class="cta-button">Send forth your Plea</button>
+        </form>
+
+        <!-- Status message area with default styling -->
+        <div
+          id="form-status"
+          style="margin-top: 1.5rem; font-weight: bold"
+        ></div>
+      </div>
+
+      <script>
+        const form = document.getElementById("contact-form");
+        const status = document.getElementById("form-status");
+
+        form.addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const data = new FormData(form);
+
+          try {
+            const response = await fetch(form.action, {
+              method: form.method,
+              body: data,
+              headers: {
+                Accept: "application/json",
+              },
+            });
+
+            if (response.ok) {
+              status.innerHTML =
+                "🕊️ <span style='color: var(--rune-color)'>Your magical message has been sent! We will commune with you shortly.</span>";
+              form.reset();
+            } else {
+              status.innerHTML =
+                "⚠️ <span style='color: var(--dragon-color)'>The arcane winds failed to carry your message. Please ensure all fields are correctly filled and try again.</span>";
+            }
+          } catch (error) {
+            status.innerHTML =
+              "🧨 <span style='color: var(--dragon-color)'>A dark spell interrupted the sending. Our mages are investigating. Please retry or contact us directly if the issue persists.</span>";
+          }
+        });
+      </script>
+    </section>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-logo">Arcane Downloads</div>
+        <div class="footer-links">
+          <a href="#home">Home</a>
+          <a href="#software">Software</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+          <a href="#" id="privacyPolicyLink">Privacy Policy</a>
+          <a href="#" id="termsOfServiceLink">Terms of Service</a>
+        </div>
+        <div class="copyright">
+          &copy; 2025 Arcane Downloads. All rights reserved.
+        </div>
+      </div>
+    </footer>
+
+    <div id="privacyPolicyModal" class="modal-overlay">
+      <div class="modal-content">
+        <button class="modal-close-btn">&times;</button>
+        <h3>Ancient Oaths of Privacy</h3>
+        <p>
+          Welcome, esteemed traveler, to the Arcane Downloads Privacy Policy. In
+          this sacred scroll, we unveil the principles governing the collection,
+          use, and protection of your precious ethereal data within our mystical
+          digital realm. We pledge to safeguard your privacy with the vigilance
+          of ancient guardians and the strength of arcane wards.
+        </p>
+
+        <h4 class="modal-policy-title">
+          1. The Gathering of Whispers (Information We Collect)
+        </h4>
+        <p>
+          When you journey through our portal, certain whispers of your presence
+          may be gently gathered. This includes:
+        </p>
+        <ul>
+          <li>
+            <strong>Ethereal Signatures (Usage Data):</strong> Non-identifiable
+            data about your interaction with our site, such as pages visited,
+            time spent, and magical artifacts downloaded. This helps us attune
+            our services to your needs.
+          </li>
+          <li>
+            <strong>Mystical Coordinates (Technical Data):</strong> Information
+            about your device, browser, and IP address, which helps us ensure
+            compatibility and defend against dark arts.
+          </li>
+          <li>
+            <strong>Voluntary Revelations (Personal Data):</strong> Should you
+            choose to commune with the Conclave (via our contact form) or
+            register for a seeker's account, you may provide your name, email
+            address, and other information. This data is held in guarded
+            chambers, accessible only by authorized scribes.
+          </li>
+        </ul>
+
+        <h4 class="modal-policy-title">
+          2. The Weaving of Spells (How We Use Your Information)
+        </h4>
+        <p>Your gathered data is utilized for the following arcane purposes:</p>
+        <ul>
+          <li>
+            To provide and maintain our services, ensuring a smooth flow of
+            magical downloads.
+          </li>
+          <li>
+            To personalize your journey, offering artifacts attuned to your past
+            quests.
+          </li>
+          <li>
+            To communicate with you regarding updates, new revelations, or
+            urgent warnings (if you have consented).
+          </li>
+          <li>
+            To improve our portal and its enchantments, making it more potent
+            and user-friendly.
+          </li>
+          <li>To detect and prevent maleficence and unauthorized access.</li>
+        </ul>
+
+        <h4 class="modal-policy-title">
+          3. The Sharing of Secrets (Disclosure of Your Information)
+        </h4>
+        <p>
+          We do not trade your secrets to shadowy merchants or nefarious
+          entities. Your information may only be shared under these rare
+          circumstances:
+        </p>
+        <ul>
+          <li>
+            <strong>With Trusted Alchemists (Service Providers):</strong> We may
+            engage third-party mages or entities to perform services on our
+            behalf (e.g., hosting, analytics). They are bound by strict oaths of
+            confidentiality.
+          </li>
+          <li>
+            <strong>Under Ancient Edicts (Legal Requirements):</strong> If
+            compelled by powerful legal decrees or to protect our rights, we may
+            reveal necessary information.
+          </li>
+          <li>
+            <strong>With Your Blessing (Consent):</strong> We will seek your
+            explicit consent before sharing your personal revelations for any
+            other purpose.
+          </li>
+        </ul>
+
+        <h4 class="modal-policy-title">
+          4. The Fortress of Data (Data Security)
+        </h4>
+        <p>
+          We employ robust enchantments and guardian spells to protect your data
+          from unauthorized access, alteration, disclosure, or destruction.
+          However, no digital fortress is entirely impervious. We strive to use
+          commercially acceptable means to protect your information, but we
+          cannot guarantee its absolute security.
+        </p>
+
+        <h4 class="modal-policy-title">
+          5. Whispers of Other Realms (Third-Party Links)
+        </h4>
+        <p>
+          Our portal may contain gateways to other realms (third-party
+          websites). We have no dominion over their privacy practices and
+          encourage you to consult their own sacred scrolls before venturing
+          forth.
+        </p>
+
+        <h4 class="modal-policy-title">
+          6. The Shifting Sands of Time (Changes to This Policy)
+        </h4>
+        <p>
+          This Privacy Policy may be updated periodically to reflect changes in
+          our practices or in the grand tapestry of digital law. We will notify
+          you of any significant changes by posting the new policy on this page.
+        </p>
+
+        <h4 class="modal-policy-title">
+          7. Your Rights as a Seeker (Your Choices)
+        </h4>
+        <p>You possess certain rights over your digital essence:</p>
+        <ul>
+          <li>
+            You may request access to the personal data we hold about you.
+          </li>
+          <li>You may request corrections to any inaccuracies.</li>
+          <li>You may withdraw your consent for certain data processing.</li>
+        </ul>
+        <p>
+          To exercise these rights, commune with the Conclave via the contact
+          information provided.
+        </p>
+
+        <p>
+          By traversing the Arcane Downloads portal, you signify your agreement
+          to this Privacy Policy. May your digital journeys be safe and filled
+          with wonder.
+        </p>
+      </div>
+    </div>
+
+    <div id="termsOfServiceModal" class="modal-overlay">
+      <div class="modal-content">
+        <button class="modal-close-btn">&times;</button>
+        <h3>Edicts of the Arcane Realm</h3>
+        <p>
+          Welcome, traveler, to the sacred Edicts of the Arcane Realm, also
+          known as the Terms of Service for Arcane Downloads. By venturing into
+          this mystical digital domain and partaking in its offerings, you
+          solemnly agree to abide by these ancient decrees.
+        </p>
+
+        <h4 class="modal-policy-title">1. Pact of Usage</h4>
+        <p>
+          <strong>Acceptance:</strong> Your access to and use of Arcane
+          Downloads ("the Service") is conditioned upon your acceptance of and
+          compliance with these Edicts. These Edicts apply to all visitors,
+          users, and others who access or use the Service.
+        </p>
+        <p>
+          <strong>Appropriate Conduct:</strong> You agree to use the Service
+          only for lawful purposes and in a manner that does not infringe the
+          rights of, or restrict or inhibit the use and enjoyment of the Service
+          by any third party.
+        </p>
+
+        <h4 class="modal-policy-title">2. Our Offerings (The Software)</h4>
+        <p>
+          <strong>Nature of Artifacts:</strong> The software and digital
+          artifacts provided through Arcane Downloads are offered "as is." While
+          we endeavor to ensure their purity and efficacy, we make no guarantees
+          regarding their absolute flawlessness or suitability for all arcane
+          tasks.
+        </p>
+        <p>
+          <strong>Licensing:</strong> Each magical artifact may be governed by
+          its own individual enchantment (license). It is your solemn duty to
+          peruse and adhere to these specific enchantments before wielding any
+          artifact.
+        </p>
+        <p>
+          <strong>Updates:</strong> We reserve the right to update, modify, or
+          remove any software from our repository at any time, without prior
+          proclamation.
+        </p>
+
+        <h4 class="modal-policy-title">
+          3. Guardianship of the Realm (Intellectual Property)
+        </h4>
+        <p>
+          The Service and its original content, features, and functionality are
+          and will remain the exclusive property of Arcane Downloads and its
+          licensors. Our sigils, names, and visual enchantments are protected by
+          ancient laws of copyright and trademark. You may not reproduce,
+          redistribute, or create derivative works from any part of the Service
+          without express written permission from the Conclave.
+        </p>
+
+        <h4 class="modal-policy-title">4. Limitations of Liability</h4>
+        <p>
+          In no event shall Arcane Downloads, nor its directors, employees,
+          partners, agents, suppliers, or affiliates, be liable for any
+          indirect, incidental, special, consequential or punitive damages,
+          including without limitation, loss of profits, data, use, goodwill, or
+          other intangible losses, resulting from:
+        </p>
+        <ul>
+          <li>
+            Your access to or use of or inability to access or use the Service;
+          </li>
+          <li>Any conduct or content of any third party on the Service;</li>
+          <li>Any content obtained from the Service; and</li>
+          <li>
+            Unauthorized access, use or alteration of your transmissions or
+            content, whether based on warranty, contract, tort (including
+            negligence) or any other legal theory, whether or not we have been
+            informed of the possibility of such damage, and even if a remedy set
+            forth herein is found to have failed of its essential purpose.
+          </li>
+        </ul>
+
+        <h4 class="modal-policy-title">5. Scrolls of Indemnification</h4>
+        <p>
+          You agree to defend, indemnify and hold harmless Arcane Downloads and
+          its licensee and licensors, and their employees, contractors, agents,
+          officers and directors, from and against any and all claims, damages,
+          obligations, losses, liabilities, costs or debt, and expenses
+          (including but not limited to attorney's fees), resulting from or
+          arising out of a) your use and access of the Service, by you or any
+          person using your account and password; or b) a breach of these
+          Edicts.
+        </p>
+
+        <h4 class="modal-policy-title">6. Jurisdiction and Law</h4>
+        <p>
+          These Edicts shall be governed and construed in accordance with the
+          laws of the Grand Conclave, without regard to its conflict of law
+          provisions. Our failure to enforce any right or provision of these
+          Edicts will not be considered a waiver of those rights.
+        </p>
+
+        <h4 class="modal-policy-title">7. Severability</h4>
+        <p>
+          Should any provision of these Edicts be deemed invalid or
+          unenforceable by a higher arcane court, the remaining provisions will
+          remain in full force and effect.
+        </p>
+
+        <h4 class="modal-policy-title">8. Amendments to the Edicts</h4>
+        <p>
+          We reserve the right, at our sole discretion, to modify or replace
+          these Edicts at any time. Should a revision be material, we will
+          endeavor to provide at least 30 days' notice prior to any new Edicts
+          taking effect. What constitutes a material change will be determined
+          at our sole discretion.
+        </p>
+
+        <h4 class="modal-policy-title">9. Contacting the Conclave</h4>
+        <p>
+          Should you have any questions about these Edicts, please contact us
+          via the communication methods provided on our Contact page.
+        </p>
+        <p>
+          By continuing to access or use our Service after those revisions
+          become effective, you agree to be bound by the revised Edicts. If you
+          do not agree to the new Edicts, please cease using the Service.
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // Cursor Follower Animation (from home_old.html)
+      const cursorFollower = document.querySelector(".cursor-follower");
+      const starsContainer = document.getElementById("stars");
+
+      // Define particle color classes
+      const particleColorClasses = [
+        "particle-spellbook",
+        "particle-crystal",
+        "particle-alchemy",
+        "particle-dragon",
+        "particle-rune",
+        "particle-enchanted",
+      ];
+
+      // Create stars
+      function createStars() {
+        const starCount = 100;
+        for (let i = 0; i < starCount; i++) {
+          const star = document.createElement("div");
+          star.classList.add("star");
+
+          // Random position
+          const x = Math.random() * 100;
+          const y = Math.random() * 100;
+
+          // Random size
+          const size = Math.random() * 2;
+
+          // Random animation duration
+          const duration = 1 + Math.random() * 3;
+
+          star.style.left = `${x}%`;
+          star.style.top = `${y}%`;
+          star.style.width = `${size}px`;
+          star.style.height = `${size}px`;
+          star.style.animationDuration = `${duration}s`;
+
+          starsContainer.appendChild(star);
+        }
+      }
+
+      // Initialize stars
+      createStars();
+
+      // Track cursor position
+      document.addEventListener("mousemove", (e) => {
+        const x = e.clientX;
+        const y = e.clientY;
+
+        // Update cursor follower position
+        cursorFollower.style.left = `${x}px`;
+        cursorFollower.style.top = `${y}px`;
+
+        // Create particles
+        if (Math.random() > 0.6) { // Increased frequency for more particles
+          createParticle(x, y);
+        }
+      });
+
+      // Create particles
+      function createParticle(x, y) {
+        const particle = document.createElement("div");
+        particle.classList.add("particle");
+
+        // Assign a random color class
+        const randomColorClass = particleColorClasses[Math.floor(Math.random() * particleColorClasses.length)];
+        particle.classList.add(randomColorClass);
+
+        // Random size
+        const size = Math.random() * 6 + 4; // Larger crystals
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+
+        // Random position around cursor
+        const offsetX = (Math.random() - 0.5) * 40; // Wider spread
+        const offsetY = (Math.random() - 0.5) * 40;
+
+        particle.style.left = `${x + offsetX}px`;
+        particle.style.top = `${y + offsetY}px`;
+
+        // Random animation for movement and fading
+        const animationDuration = Math.random() * 2 + 1;
+        particle.style.animation = `floatParticle ${animationDuration}s ease-out forwards, fadeOutParticle ${animationDuration}s ease-out forwards`;
+        // Initial opacity set to 0 to prevent flash before animation
+        particle.style.opacity = 1;
+
+
+        // Define keyframes for particle float and fade if not already defined (or ensure they are)
+        const styleSheet = document.styleSheets[0]; // Get the first stylesheet
+        // Check if @keyframes floatParticle is already defined to avoid duplicates
+        const floatParticleRule = [...styleSheet.cssRules].find(rule => rule.name === 'floatParticle');
+        if (!floatParticleRule) {
+             styleSheet.insertRule(`
+                @keyframes floatParticle {
+                    0% { transform: translate(-50%, -50%) rotate(45deg) translateY(0px); opacity: 1; }
+                    100% { transform: translate(-50%, -50%) rotate(45deg) translateY(-${size * 5}px); opacity: 0; }
+                }
+             `);
+        }
+
+        const fadeOutParticleRule = [...styleSheet.cssRules].find(rule => rule.name === 'fadeOutParticle');
+        if (!fadeOutParticleRule) {
+             styleSheet.insertRule(`
+                @keyframes fadeOutParticle {
+                    0% { opacity: 1; }
+                    100% { opacity: 0; }
+                }
+             `);
+        }
+
+        document.body.appendChild(particle);
+
+        // Remove particle after animation
+        setTimeout(() => {
+          particle.remove();
+        }, animationDuration * 1000);
+      }
+
+
+      // Active state for cursor follower when hovering clickable elements
+      const clickableElements = document.querySelectorAll(
+        "a, button, .download-btn"
+      );
+
+      clickableElements.forEach((el) => {
+        el.addEventListener("mouseenter", () => {
+          cursorFollower.classList.add("active");
+        });
+
+        el.addEventListener("mouseleave", () => {
+          cursorFollower.classList.remove("active");
+        });
+      });
+
+      // Responsive navigation for mobile (remains the same)
+      function setupMobileNav() {
+        const nav = document.querySelector("nav ul");
+        const header = document.querySelector("header");
+
+        if (window.innerWidth <= 768) {
+          // Check if menu button already exists to prevent duplicates
+          if (!document.querySelector(".mobile-menu-button")) {
+            const menuButton = document.createElement("button");
+            menuButton.innerHTML = "☰";
+            menuButton.classList.add("mobile-menu-button"); // Add a class for identification
+            menuButton.style.background = "none";
+            menuButton.style.border = "none";
+            menuButton.style.color = "var(--pale-blue)";
+            menuButton.style.fontSize = "1.5rem";
+            menuButton.style.cursor = "pointer";
+            menuButton.style.position = "absolute"; /* Position it */
+            menuButton.style.right = "2rem";
+            menuButton.style.top = "1rem";
+
+            header.appendChild(menuButton); // Append to header
+
+            nav.style.display = "none"; // Initially hide the nav
+
+            // Toggle nav visibility
+            menuButton.addEventListener("click", () => {
+              if (nav.style.display === "none" || !nav.style.display) {
+                nav.style.display = "flex";
+                nav.style.flexDirection = "column";
+                nav.style.position = "absolute";
+                nav.style.top = "60px"; /* Below header */
+                nav.style.left = "0";
+                nav.style.width = "100%";
+                nav.style.background = "var(--deep-blue)";
+                nav.style.padding = "1rem 0";
+                nav.style.boxShadow = "0 5px 15px rgba(0,0,0,0.3)";
+              } else {
+                nav.style.display = "none";
+              }
+            });
+
+            // Close menu when clicking a link
+            nav.querySelectorAll("a").forEach((link) => {
+              link.addEventListener("click", () => {
+                nav.style.display = "none";
+              });
+            });
+          }
+        } else {
+          // If resized to desktop, remove mobile button and ensure nav is visible
+          const existingMenuButton = document.querySelector(
+            ".mobile-menu-button"
+          );
+          if (existingMenuButton) {
+            existingMenuButton.remove();
+          }
+          nav.style.display = "flex";
+          nav.style.flexDirection = "row";
+          nav.style.position = "static";
+          nav.style.background = "none";
+          nav.style.padding = "0";
+          nav.style.boxShadow = "none";
+        }
+      }
+
+      // Initialize mobile nav and update on resize
+      setupMobileNav();
+      window.addEventListener("resize", setupMobileNav);
+
+      // Custom Modal for alerts
+      function showModal(message, type, callback = null) {
+        const existingModal = document.getElementById("customModal");
+        if (existingModal) existingModal.remove();
+
+        const modalContainer = document.createElement("div");
+        modalContainer.id = "customModal";
+        modalContainer.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10001;
+                backdrop-filter: blur(3px);
+            `;
+
+        const modalContent = document.createElement("div");
+        modalContent.style.cssText = `
+                background: linear-gradient(to bottom right, var(--deep-blue), var(--mystic-blue));
+                padding: 2rem;
+                border-radius: 10px;
+                box-shadow: 0 0 20px rgba(74, 90, 154, 0.7);
+                border: 1px solid var(--glow-blue);
+                color: var(--pale-blue);
+                text-align: center;
+                max-width: 400px;
+                width: 90%;
+            `;
+
+        const modalMessage = document.createElement("p");
+        modalMessage.textContent = message;
+        modalMessage.style.cssText = `
+                margin-bottom: 1.5rem;
+                font-size: 1.1rem;
+                line-height: 1.5;
+            `;
+
+        modalContent.appendChild(modalMessage);
+
+        if (type === "confirm") {
+          const buttonContainer = document.createElement("div");
+          buttonContainer.style.cssText = `
+                    display: flex;
+                    justify-content: center;
+                    gap: 1rem;
+                `;
+
+          const confirmBtn = document.createElement("button");
+          confirmBtn.textContent = "Confirm";
+          confirmBtn.style.cssText = `
+                    padding: 0.7rem 1.5rem;
+                    background: linear-gradient(to right, var(--crystal-blue), var(--glow-blue));
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-size: 1rem;
+                    transition: all 0.3s ease;
+                `;
+          confirmBtn.onmouseover = () =>
+            (confirmBtn.style.transform = "translateY(-2px)");
+          confirmBtn.onmouseout = () =>
+            (confirmBtn.style.transform = "translateY(0)");
+          confirmBtn.onclick = () => {
+            if (callback) callback();
+            modalContainer.remove();
+          };
+          buttonContainer.appendChild(confirmBtn);
+
+          const cancelBtn = document.createElement("button");
+          cancelBtn.textContent = "Cancel";
+          cancelBtn.style.cssText = `
+                    padding: 0.7rem 1.5rem;
+                    background-color: var(--dark-blue);
+                    color: var(--pale-blue);
+                    border: 1px solid var(--glow-blue);
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-size: 1rem;
+                    transition: all 0.3s ease;
+                `;
+          cancelBtn.onmouseover = () =>
+            (cancelBtn.style.background = "var(--mystic-blue)");
+          cancelBtn.onmouseout = () =>
+            (cancelBtn.style.background = "var(--dark-blue)");
+          cancelBtn.onclick = () => modalContainer.remove();
+          buttonContainer.appendChild(cancelBtn);
+
+          modalContent.appendChild(buttonContainer);
+        } else {
+          // For 'alert' or 'info' type
+          const okBtn = document.createElement("button");
+          okBtn.textContent = "OK";
+          okBtn.style.cssText = `
+                    padding: 0.7rem 1.5rem;
+                    background: linear-gradient(to right, var(--mystic-blue), var(--crystal-blue));
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-size: 1rem;
+                    transition: all 0.3s ease;
+                `;
+          okBtn.onmouseover = () =>
+            (okBtn.style.transform = "translateY(-2px)");
+          okBtn.onmouseout = () => (okBtn.style.transform = "translateY(0)");
+          okBtn.onclick = () => modalContainer.remove();
+          modalContent.appendChild(okBtn);
+        }
+
+        modalContainer.appendChild(modalContent);
+        document.body.appendChild(modalContainer);
+      }
+
+      // Create floating fantasy icons (decorative background)
+      function createFloatingIcons() {
+        const icons = [
+          { class: "spell", icon: "fa-book-spells" },
+          { class: "crystal", icon: "fa-crystal-ball" },
+          { class: "potion", icon: "fa-flask-potion" },
+          { class: "dragon", icon: "fa-dragon" },
+          { class: "rune", icon: "fa-rune" },
+          { class: "magic", icon: "fa-hat-wizard" },
+          { class: "spell", icon: "fa-wand-magic" },
+          { class: "crystal", icon: "fa-gem" },
+          { class: "potion", icon: "fa-bottle-droplet" },
+          { class: "dragon", icon: "fa-fire" },
+          { class: "rune", icon: "fa-shield-halved" },
+          { class: "magic", icon: "fa-sparkles" },
+        ];
+
+        // Create 15 floating icons with staggered animation
+        for (let i = 0; i < 15; i++) {
+          setTimeout(() => {
+            const iconType = icons[Math.floor(Math.random() * icons.length)];
+            const icon = document.createElement("div");
+            icon.className = `floating-icon ${iconType.class}`;
+
+            // Random position along the bottom
+            const left = Math.random() * 100;
+            icon.style.left = `${left}vw`;
+            icon.style.bottom = "-50px";
+
+            // Random size
+            const size = 20 + Math.random() * 30;
+            icon.style.fontSize = `${size}px`;
+
+            // Create the icon element
+            const iconElement = document.createElement("i");
+            iconElement.className = `fas ${iconType.icon}`;
+            icon.appendChild(iconElement);
+
+            document.body.appendChild(icon);
+
+            // Remove icon after animation completes
+            setTimeout(() => {
+              icon.remove();
+            }, 60000); // Match the longest animation duration
+          }, Math.random() * 30000); // Stagger creation
+        }
+      }
+
+      // Initialize floating icons and keep creating them
+      createFloatingIcons();
+      setInterval(createFloatingIcons, 30000); // Create new batch every 30 seconds
+
+      // Dynamic content loading for software cards
+      const softwareGrid = document.getElementById("softwareGrid");
+      // Base URL for your API - MUST MATCH YOUR SERVER.JS PORT
+      const API_BASE_URL = "https://arcane-downloads.onrender.com/api/software";
+
+      async function loadSoftwareCards() {
+        softwareGrid.innerHTML =
+          '<p style="text-align: center; color: var(--light-blue);">Summoning arcane artifacts...</p>';
+        try {
+          const response = await fetch(API_BASE_URL);
+          if (!response.ok) {
+            // It's crucial to check response.ok and handle non-2xx statuses
+            throw new Error(
+              `HTTP error! status: ${response.status} - ${response.statusText}`
+            );
+          }
+          const softwareList = await response.json();
+
+          softwareGrid.innerHTML = ""; // Clear loading message
+
+          if (softwareList.length === 0) {
+            softwareGrid.innerHTML =
+              '<p style="text-align: center; color: var(--light-blue);">No arcane artifacts found in the collection.</p>';
+            showModal(
+                "Our archives are currently empty. Please check back later for new enchantments!",
+                "info"
+            );
+            return;
+          }
+
+          softwareList.forEach((software) => {
+            const softwareCard = document.createElement("div");
+            softwareCard.className = "software-card";
+
+            // Determine the content for the icon/image container
+            let iconContentHtml = "";
+            if (software.imageType === "image" && software.imageUrl) {
+              iconContentHtml = `<img src="${software.imageUrl}" alt="${software.name}" onerror="this.onerror=null;this.src='https://placehold.co/120x120/4a5a9a/ffffff?text=Image+Missing';" />`;
+            } else if (software.icon) {
+              iconContentHtml = `<i class="fas ${software.icon}"></i>`;
+            } else {
+              // Fallback if neither icon nor image URL is provided
+              iconContentHtml = `<i class="fas fa-box"></i>`;
+            }
+
+            // Determine the correct class for the icon container based on the 'color' property
+            const iconContainerClass = software.color ? `${software.color}-icon` : '';
+
+
+            // Create the download link or unavailable message
+            const downloadHtml = software.downloadUrl
+              ? `<a href="${software.downloadUrl}" target="_blank" class="download-btn">
+                                <i class="fas fa-download"></i> Download
+                           </a>`
+              : `<p class="no-download-link">Download link unavailable.</p>`;
+
+            softwareCard.innerHTML = `
+                        <div class="card-icon">
+                            <div class="icon-container ${iconContainerClass}">
+                                ${iconContentHtml}
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <h3>${software.name}</h3>
+                            <p>${software.description}</p>
+                            ${downloadHtml}
+                        </div>
+                    `;
+            softwareGrid.appendChild(softwareCard);
+          });
+
+          // Re-attach event listeners for dynamically added download buttons
+          // Only attach if it's a real download link
+          document.querySelectorAll(".download-btn").forEach((button) => {
+            button.addEventListener("click", (e) => {
+              // Prevent default behavior if you want a custom effect *before* download
+              // If you just want the download to happen, remove e.preventDefault()
+              // and let the browser handle the navigation.
+              // For direct downloads, `e.preventDefault()` is usually removed.
+              // However, since we have a magic effect, let's keep it and open manually.
+              e.preventDefault();
+              const downloadUrl = button.getAttribute("href");
+
+              createMagicEffect(button, "download"); // Use a generic effect for download
+              showModal(
+                `Initiating the transfer of '${
+                  button.closest(".software-card").querySelector("h3")
+                    .textContent
+                }'. Your download should begin momentarily.`,
+                "info"
+              );
+
+              // After showing modal/effect, trigger the actual download
+              setTimeout(() => {
+                window.open(downloadUrl, "_blank");
+              }, 500); // Small delay to allow modal/effect to show
+            });
+          });
+        } catch (error) {
+          console.error("Error fetching software for home page:", error);
+          softwareGrid.innerHTML = `<p style="text-align: center; color: var(--dragon-color);">Failed to load arcane artifacts. Please try refreshing the page or contact support if the issue persists.</p>`;
+          showModal(
+            `Failed to retrieve arcane artifacts: A mystical barrier is preventing access to our collection. Please try again later or contact our support mages if the issue persists.`,
+            "info"
+          );
+        }
+      }
+
+      // Call this function when the home page loads
+      document.addEventListener("DOMContentLoaded", loadSoftwareCards);
+
+      // Re-implement createMagicEffect for home.html if you want it (optional, but good for consistency)
+      function createMagicEffect(element, action) {
+        const rect = element.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+
+        const effect = document.createElement("div");
+        effect.style.position = "fixed";
+        effect.style.top = `${y}px`;
+        effect.style.left = `${x}px`;
+        effect.style.width = "0";
+        effect.style.height = "0";
+        effect.style.borderRadius = "50%";
+        effect.style.backgroundColor = "rgba(74, 90, 154, 0.3)"; // Default to glow blue
+        effect.style.boxShadow = "0 0 20px var(--glow-blue)";
+        effect.style.transform = "translate(-50%, -50%)";
+        effect.style.zIndex = "1000";
+        effect.style.transition = "all 0.5s ease-out";
+
+        document.body.appendChild(effect);
+
+        setTimeout(() => {
+          effect.style.width = "200px";
+          effect.style.height = "200px";
+          effect.style.opacity = "0";
+        }, 10);
+
+        setTimeout(() => {
+          effect.remove();
+        }, 600);
+      }
+
+      // New Modal Functions for Privacy Policy and Terms of Service
+      function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          modal.classList.add("active");
+          document.body.style.overflow = "hidden"; // Prevent scrolling when modal is open
+        }
+      }
+
+      function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          modal.classList.remove("active");
+          // Allow scrolling after a brief delay to let the animation complete
+          setTimeout(() => {
+            if (!document.querySelector(".modal-overlay.active")) {
+              // Only restore if no other modal is open
+              document.body.style.overflow = "";
+            }
+          }, 300);
+        }
+      }
+
+      // Event Listeners for Modal Links and Close Buttons
+      document.addEventListener("DOMContentLoaded", () => {
+        const privacyLink = document.getElementById("privacyPolicyLink");
+        const termsLink = document.getElementById("termsOfServiceLink");
+        const privacyModal = document.getElementById("privacyPolicyModal");
+        const termsModal = document.getElementById("termsOfServiceModal");
+
+        if (privacyLink) {
+          privacyLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            openModal("privacyPolicyModal");
+          });
+        }
+
+        if (termsLink) {
+          termsLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            openModal("termsOfServiceModal");
+          });
+        }
+
+        // Close buttons for both modals
+        if (privacyModal) {
+          privacyModal
+            .querySelector(".modal-close-btn")
+            .addEventListener("click", () => {
+              closeModal("privacyPolicyModal");
+            });
+          // Close when clicking outside the content
+          privacyModal.addEventListener("click", (e) => {
+            if (e.target === privacyModal) {
+              closeModal("privacyPolicyModal");
+            }
+          });
+        }
+
+        if (termsModal) {
+          termsModal
+            .querySelector(".modal-close-btn")
+            .addEventListener("click", () => {
+              closeModal("termsOfServiceModal");
+            });
+          // Close when clicking outside the content
+          termsModal.addEventListener("click", (e) => {
+            if (e.target === termsModal) {
+              closeModal("termsOfServiceModal");
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

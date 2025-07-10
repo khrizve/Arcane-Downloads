@@ -1,0 +1,1831 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arcane Downloads - Admin Portal</title>
+    <style>
+      /* Dark Fantasy Blue Color Palette */
+      :root {
+        --dark-blue: #0a0e23;
+        --deep-blue: #121a3a;
+        --mystic-blue: #1a2a57;
+        --crystal-blue: #2a3a7a;
+        --glow-blue: #4a5a9a;
+        --light-blue: #7a8aba;
+        --pale-blue: #aabada;
+        --gold: #d4af37;
+        --silver: #c0c0c0;
+
+        /* Fantasy icon colors */
+        --spellbook-color: #9c27b0;
+        --crystal-color: #00bcd4;
+        --alchemy-color: #ff9800;
+        --dragon-color: #f44336;
+        --rune-color: #4caf50;
+        --enchanted-color: #2196f3;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Georgia", serif;
+      }
+
+      body {
+        background-color: var(--dark-blue);
+        color: var(--pale-blue);
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      /* Admin Login Screen */
+      .login-portal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(10, 14, 35, 0.9);
+        z-index: 10000;
+        backdrop-filter: blur(5px);
+      }
+
+      .login-container {
+        background: linear-gradient(
+          to bottom right,
+          var(--deep-blue),
+          var(--mystic-blue)
+        );
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 0 30px rgba(74, 90, 154, 0.5);
+        width: 100%;
+        max-width: 400px;
+        border: 1px solid var(--glow-blue);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .login-container::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(212, 175, 55, 0.1) 0%,
+          transparent 70%
+        );
+        animation: rotate 20s linear infinite;
+        z-index: -1;
+      }
+
+      @keyframes rotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .login-title {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: var(--gold);
+        font-size: 1.8rem;
+        text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+      }
+
+      .login-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .form-group label {
+        color: var(--pale-blue);
+        font-size: 1rem;
+      }
+
+      .form-group input {
+        padding: 0.8rem;
+        background-color: var(--dark-blue);
+        border: 1px solid var(--glow-blue);
+        border-radius: 5px;
+        color: white;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: var(--gold);
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+      }
+
+      .login-btn {
+        padding: 0.8rem;
+        background: linear-gradient(
+          to right,
+          var(--mystic-blue),
+          var(--crystal-blue)
+        );
+        color: var(--pale-blue);
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+      }
+
+      .login-btn:hover {
+        background: linear-gradient(
+          to right,
+          var(--crystal-blue),
+          var(--glow-blue)
+        );
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(42, 58, 122, 0.5);
+      }
+
+      /* Admin Panel */
+      .admin-panel {
+        display: none;
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--glow-blue);
+      }
+
+      .admin-title {
+        color: var(--gold);
+        font-size: 2rem;
+      }
+
+      .logout-btn {
+        padding: 0.5rem 1rem;
+        background-color: var(--dragon-color);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .logout-btn:hover {
+        background-color: #d32f2f;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
+      }
+
+      /* Admin Sidebar */
+      .admin-sidebar {
+        width: 250px;
+        background: linear-gradient(
+          to bottom,
+          var(--deep-blue),
+          var(--mystic-blue)
+        );
+        border-radius: 10px;
+        padding: 1.5rem;
+        border: 1px solid var(--glow-blue);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        flex-shrink: 0;
+      }
+
+      .sidebar-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: var(--gold);
+        font-size: 1.5rem;
+        border-bottom: 1px solid var(--glow-blue);
+        padding-bottom: 1rem;
+      }
+
+      .sidebar-header .sidebar-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        display: block;
+        text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+      }
+
+      .sidebar-menu {
+        list-style: none;
+      }
+
+      .sidebar-menu .menu-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem 0.8rem;
+        margin-bottom: 0.7rem;
+        color: var(--pale-blue);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .sidebar-menu .menu-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          to right,
+          rgba(42, 58, 122, 0.3),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 0;
+      }
+
+      .sidebar-menu .menu-item:hover::before {
+        transform: translateX(0);
+      }
+
+      .sidebar-menu .menu-item.active {
+        background: linear-gradient(
+          to right,
+          var(--crystal-blue),
+          var(--mystic-blue)
+        );
+        box-shadow: 0 0 15px rgba(42, 58, 122, 0.5);
+        color: white;
+      }
+
+      .sidebar-menu .menu-item:hover {
+        transform: translateX(5px);
+      }
+
+      .sidebar-menu .menu-item .menu-icon {
+        font-size: 1.3rem;
+        margin-right: 1rem;
+        color: var(--glow-blue);
+        transition: color 0.3s ease;
+        position: relative;
+        z-index: 1;
+      }
+
+      .sidebar-menu .menu-item.active .menu-icon,
+      .sidebar-menu .menu-item:hover .menu-icon {
+        color: var(--gold);
+      }
+
+      .sidebar-menu .menu-item span {
+        font-size: 1.1rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Adjust main content for sidebar */
+      .admin-content {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap; /* Allow content to wrap on smaller screens */
+      }
+
+      .software-list,
+        .software-form,
+        .account-settings-section, /* New: Combined section */
+        .user-management-section,
+        .settings-section,
+        .reports-section {
+        flex: 1; /* Allow content to take remaining space */
+        min-width: 300px; /* Ensure minimum width for readability */
+      }
+
+      .software-list,
+      .software-form,
+      .account-settings-section,
+      .user-management-section,
+      .settings-section,
+      .reports-section {
+        background: linear-gradient(
+          to bottom right,
+          var(--deep-blue),
+          var(--mystic-blue)
+        );
+        border-radius: 10px;
+        padding: 1.5rem;
+        border: 1px solid var(--glow-blue);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        display: none; /* Hidden by default, managed by JS */
+      }
+
+      /* Make software list and form container visible by default */
+      #softwareManagementContainer {
+        display: flex; /* Flexbox for the two columns */
+        flex-wrap: wrap; /* Allow wrapping */
+        gap: 2rem;
+        flex: 1;
+      }
+      /* Explicitly make children of softwareManagementContainer visible when the container is flexed */
+      #softwareManagementContainer .software-list,
+      #softwareManagementContainer .software-form {
+        display: block; /* These should be visible when their parent is active */
+      }
+
+      .section-title {
+        color: var(--gold);
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--glow-blue);
+      }
+
+      .software-items {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .software-item {
+        background-color: rgba(26, 42, 87, 0.5);
+        padding: 1rem;
+        border-radius: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid var(--glow-blue);
+        transition: all 0.3s ease;
+      }
+
+      .software-item:hover {
+        background-color: rgba(42, 58, 122, 0.5);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(42, 58, 122, 0.2);
+      }
+
+      .software-info h3 {
+        color: var(--gold);
+        margin-bottom: 0.5rem;
+      }
+
+      .software-actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .action-btn {
+        padding: 0.5rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .edit-btn {
+        background-color: var(--crystal-blue);
+        color: white;
+      }
+
+      .edit-btn:hover {
+        background-color: var(--glow-blue);
+      }
+
+      .delete-btn {
+        background-color: var(--dragon-color);
+        color: white;
+      }
+
+      .delete-btn:hover {
+        background-color: #d32f2f;
+      }
+
+      .admin-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .admin-form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .admin-form-group label {
+        color: var(--pale-blue);
+        font-size: 0.9rem;
+      }
+
+      .admin-form-group input,
+      .admin-form-group textarea,
+      .admin-form-group select {
+        padding: 0.8rem;
+        background-color: var(--dark-blue);
+        border: 1px solid var(--glow-blue);
+        border-radius: 5px;
+        color: white;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .admin-form-group textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      .admin-form-group input:focus,
+      .admin-form-group textarea:focus,
+      .admin-form-group select:focus {
+        outline: none;
+        border-color: var(--gold);
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .submit-btn {
+        padding: 0.8rem;
+        background: linear-gradient(
+          to right,
+          var(--mystic-blue),
+          var(--crystal-blue)
+        );
+        color: var(--pale-blue);
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        flex: 1;
+      }
+
+      .submit-btn:hover {
+        background: linear-gradient(
+          to right,
+          var(--crystal-blue),
+          var(--glow-blue)
+        );
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(42, 58, 122, 0.5);
+      }
+
+      .cancel-btn {
+        padding: 0.8rem;
+        background-color: var(--dark-blue);
+        color: var(--pale-blue);
+        border: 1px solid var(--glow-blue);
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        flex: 1;
+      }
+
+      .cancel-btn:hover {
+        background-color: var(--mystic-blue);
+        transform: translateY(-2px);
+      }
+
+      /* Specific styles for Account Settings forms */
+      #accountSettingsSection form {
+        margin-bottom: 2rem; /* Spacing between username and password forms */
+        padding-bottom: 1.5rem; /* Separator for clarity */
+        border-bottom: 1px solid rgba(74, 90, 154, 0.3);
+      }
+      #accountSettingsSection form:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+
+      /* Floating Fantasy Icons */
+      .floating-icon {
+        position: fixed;
+        font-size: 24px;
+        opacity: 0.3;
+        z-index: 1;
+        pointer-events: none;
+        animation: float-icon linear infinite;
+        text-shadow: 0 0 10px currentColor;
+        filter: drop-shadow(0 0 5px currentColor);
+      }
+
+      @keyframes float-icon {
+        0% {
+          transform: translateY(100vh) translateX(0) rotate(0deg);
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.5;
+        }
+        90% {
+          opacity: 0.5;
+        }
+        100% {
+          transform: translateY(-100px) translateX(100px) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      /* Assign different animations and colors to each icon type */
+      .floating-icon.spell {
+        color: var(--spellbook-color);
+        animation-duration: 40s;
+        animation-delay: 0s;
+      }
+
+      .floating-icon.crystal {
+        color: var(--crystal-color);
+        animation-duration: 45s;
+        animation-delay: 5s;
+      }
+
+      .floating-icon.potion {
+        color: var(--alchemy-color);
+        animation-duration: 50s;
+        animation-delay: 10s;
+      }
+
+      .floating-icon.dragon {
+        color: var(--dragon-color);
+        animation-duration: 35s;
+        animation-delay: 15s;
+      }
+
+      .floating-icon.rune {
+        color: var(--rune-color);
+        animation-duration: 55s;
+        animation-delay: 20s;
+      }
+
+      .floating-icon.magic {
+        color: var(--enchanted-color);
+        animation-duration: 60s;
+        animation-delay: 25s;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .admin-content {
+          flex-direction: column;
+        }
+
+        .admin-sidebar {
+          width: 100%;
+          margin-bottom: 2rem;
+        }
+
+        .software-form,
+        .account-settings-section,
+        .user-management-section,
+        .settings-section,
+        .reports-section {
+          width: 100%;
+        }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- Login Portal -->
+    <div class="login-portal" id="loginPortal">
+      <div class="login-container">
+        <h2 class="login-title">Arcane Admin Portal</h2>
+        <form class="login-form" id="loginForm">
+          <div class="form-group">
+            <label for="username">Mystic Username</label>
+            <input type="text" id="username" name="username" required />
+          </div>
+          <div class="form-group">
+            <label for="password">Enchanted Password</label>
+            <input type="password" id="password" name="password" required />
+          </div>
+          <button type="submit" class="login-btn">Unlock Portal</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+      <div class="admin-header">
+        <h1 class="admin-title">Arcane Software Repository</h1>
+        <!-- The main logout button is kept here as well for visibility -->
+        <button class="logout-btn" id="logoutBtn">
+          <i class="fas fa-door-open"></i> Seal Portal
+        </button>
+      </div>
+
+      <div class="admin-content">
+        <!-- Admin Sidebar Navigation -->
+        <div class="admin-sidebar">
+          <div class="sidebar-header">
+            <i class="fas fa-hat-wizard sidebar-icon"></i>
+            <h3>Admin Spells</h3>
+          </div>
+          <ul class="sidebar-menu">
+            <li class="menu-item active" data-target="software-management">
+              <i class="fas fa-scroll menu-icon"></i>
+              <span>Artifacts</span>
+            </li>
+            <li class="menu-item" data-target="account-settings">
+              <i class="fas fa-user-cog menu-icon"></i>
+              <span>Account Settings</span>
+            </li>
+            <li class="menu-item" data-target="user-management">
+              <i class="fas fa-crown menu-icon"></i>
+              <span>Apprentices</span>
+            </li>
+            <li class="menu-item" data-target="settings">
+              <i class="fas fa-cogs menu-icon"></i>
+              <span>Enchantments</span>
+            </li>
+            <li class="menu-item" data-target="reports">
+              <i class="fas fa-chart-line menu-icon"></i>
+              <span>Divinations</span>
+            </li>
+            <!-- New Logout Menu Item -->
+            <li class="menu-item" data-target="logout">
+              <i class="fas fa-sign-out-alt menu-icon"></i>
+              <span>Logout</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Software List and Form Container -->
+        <div id="softwareManagementContainer">
+          <div class="software-list">
+            <h2 class="section-title">Magical Artifacts</h2>
+            <div class="software-items" id="softwareItems">
+              <!-- Software items will be added dynamically -->
+            </div>
+          </div>
+
+          <div class="software-form">
+            <h2 class="section-title" id="formTitle">Forge New Artifact</h2>
+            <form class="admin-form" id="softwareForm">
+              <!-- This input will store MongoDB's _id -->
+              <input type="hidden" id="softwareId" />
+              <div class="admin-form-group">
+                <label for="name">Artifact Name</label>
+                <input type="text" id="name" name="name" required />
+              </div>
+              <div class="admin-form-group">
+                <label for="description">Arcane Description</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  required
+                ></textarea>
+              </div>
+              <div class="admin-form-group">
+                <label for="downloadUrl">Download URL</label>
+                <input
+                  type="url"
+                  id="downloadUrl"
+                  name="downloadUrl"
+                  placeholder="https://example.com/download.zip"
+                  required
+                />
+              </div>
+
+              <!-- New: Image Type Selection -->
+              <div class="admin-form-group">
+                <label>Display Type</label>
+                <div style="display: flex; gap: 1rem;">
+                  <input type="radio" id="displayTypeIcon" name="imageType" value="icon" checked>
+                  <label for="displayTypeIcon" style="margin-top:0;">Icon</label>
+                  <input type="radio" id="displayTypeImage" name="imageType" value="image">
+                  <label for="displayTypeImage" style="margin-top:0;">Image URL</label>
+                </div>
+              </div>
+
+              <div class="admin-form-group" id="iconSelectionGroup">
+                <label for="icon">Mystic Icon</label>
+                <select id="icon" name="icon">
+                  <option value="fa-book">Spellbook</option>
+                  <option value="fa-scroll">Scroll</option>
+                  <option value="fa-ring">Magic Ring</option>
+                  <option value="fa-flask">Alchemy Flask</option>
+                  <option value="fa-dragon">Dragon</option>
+                  <option value="fa-code">Code</option>
+                  <option value="fa-hat-wizard">Wizard Hat</option>
+                  <option value="fa-wand-magic">Magic Wand</option>
+                  <option value="fa-gem">Gem</option>
+                  <option value="fa-ghost">Ghost</option>
+                  <option value="fa-fire">Fire</option>
+                  <option value="fa-shield-halved">Shield</option>
+                  <option value="fa-dungeon">Dungeon</option>
+                </select>
+              </div>
+              <div class="admin-form-group" id="imageUrlGroup" style="display: none;">
+                <label for="imageUrl">Image URL</label>
+                <input type="url" id="imageUrl" name="imageUrl" placeholder="https://example.com/image.png">
+              </div>
+
+              <div class="admin-form-group">
+                <label for="color">Enchantment Color</label>
+                <select id="color" name="color" required>
+                  <option value="spellbook">Purple (Spellbook)</option>
+                  <option value="crystal">Cyan (Crystal)</option>
+                  <option value="alchemy">Orange (Alchemy)</option>
+                  <option value="dragon">Red (Dragon)</option>
+                  <option value="rune">Green (Rune)</option>
+                  <option value="enchanted">Blue (Enchanted)</option>
+                </select>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="submit-btn" id="submitBtn">
+                  Conjure Artifact
+                </button>
+                <button type="button" class="cancel-btn" id="cancelBtn">
+                  Banish Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Account Settings Section (for Username and Password Change) -->
+        <div class="account-settings-section" id="accountSettingsSection">
+          <h2 class="section-title">Account Settings</h2>
+
+          <!-- Change Username Form -->
+          <form class="admin-form" id="changeUsernameForm">
+            <h3>Change Mystic Username</h3>
+            <div class="admin-form-group">
+              <label for="currentUsernameChange">Current Username</label>
+              <input
+                type="text"
+                id="currentUsernameChange"
+                name="currentUsernameChange"
+                readonly
+                required
+              />
+            </div>
+            <div class="admin-form-group">
+              <label for="passwordForUsernameChange">Current Password</label>
+              <input
+                type="password"
+                id="passwordForUsernameChange"
+                name="passwordForUsernameChange"
+                required
+              />
+            </div>
+            <div class="admin-form-group">
+              <label for="newUsername">New Mystic Username</label>
+              <input type="text" id="newUsername" name="newUsername" required />
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="submit-btn">Update Username</button>
+              <button
+                type="button"
+                class="cancel-btn"
+                id="cancelChangeUsernameBtn"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+
+          <!-- Change Password Form -->
+          <form class="admin-form" id="changePasswordForm">
+            <h3>Change Enchanted Password</h3>
+            <div class="admin-form-group">
+              <label for="usernameForPasswordChange">Mystic Username</label>
+              <input
+                type="text"
+                id="usernameForPasswordChange"
+                name="usernameForPasswordChange"
+                readonly
+                required
+              />
+            </div>
+            <div class="admin-form-group">
+              <label for="currentPassword">Current Enchanted Password</label>
+              <input
+                type="password"
+                id="currentPassword"
+                name="currentPassword"
+                required
+              />
+            </div>
+            <div class="admin-form-group">
+              <label for="newPassword">New Enchanted Password</label>
+              <input
+                type="password"
+                id="newPassword"
+                name="newPassword"
+                required
+              />
+            </div>
+            <div class="admin-form-group">
+              <label for="confirmNewPassword">Confirm New Password</label>
+              <input
+                type="password"
+                id="confirmNewPassword"
+                name="confirmNewPassword"
+                required
+              />
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="submit-btn">Update Password</button>
+              <button
+                type="button"
+                class="cancel-btn"
+                id="cancelChangePasswordBtn"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Other Admin Sections (currently placeholders) -->
+        <div id="user-management-section" class="user-management-section">
+          <h2 class="section-title">Apprentices Management</h2>
+          <p>User management features will appear here.</p>
+        </div>
+        <div id="settings-section" class="settings-section">
+          <h2 class="section-title">Enchantments Settings</h2>
+          <p>Global settings and configurations will appear here.</p>
+        </div>
+        <div id="reports-section" class="reports-section">
+          <h2 class="section-title">Divinations Reports</h2>
+          <p>Analytics and reports will appear here.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Fantasy Icons -->
+    <div id="floatingIcons"></div>
+
+    <script>
+      // DOM Elements
+      const loginPortal = document.getElementById("loginPortal");
+      const loginForm = document.getElementById("loginForm");
+      const adminPanel = document.getElementById("adminPanel");
+      const logoutBtn = document.getElementById("logoutBtn");
+      const softwareItems = document.getElementById("softwareItems");
+      const softwareForm = document.getElementById("softwareForm");
+      const formTitle = document.getElementById("formTitle");
+      const submitBtn = document.getElementById("submitBtn");
+      const cancelBtn = document.getElementById("cancelBtn");
+      const floatingIcons = document.getElementById("floatingIcons");
+
+      // New input for download URL
+      const downloadUrlInput = document.getElementById("downloadUrl");
+
+      // New elements for image/icon selection
+      const displayTypeIcon = document.getElementById("displayTypeIcon");
+      const displayTypeImage = document.getElementById("displayTypeImage");
+      const iconSelectionGroup = document.getElementById("iconSelectionGroup");
+      const imageUrlGroup = document.getElementById("imageUrlGroup");
+      const iconSelect = document.getElementById("icon");
+      const imageUrlInput = document.getElementById("imageUrl");
+
+      // Elements for Account Settings
+      const accountSettingsSection = document.getElementById(
+        "accountSettingsSection"
+      );
+      const changeUsernameForm = document.getElementById("changeUsernameForm");
+      const currentUsernameChangeInput = document.getElementById(
+        "currentUsernameChange"
+      );
+      const passwordForUsernameChangeInput = document.getElementById(
+        "passwordForUsernameChange"
+      );
+      const newUsernameInput = document.getElementById("newUsername");
+      const cancelChangeUsernameBtn = document.getElementById(
+        "cancelChangeUsernameBtn"
+      );
+
+      const changePasswordForm = document.getElementById("changePasswordForm");
+      const usernameForPasswordChangeInput = document.getElementById(
+        "usernameForPasswordChange"
+      );
+      const currentPasswordInput = document.getElementById("currentPassword");
+      const newPasswordInput = document.getElementById("newPassword");
+      const confirmNewPasswordInput =
+        document.getElementById("confirmNewPassword");
+      const cancelChangePasswordBtn = document.getElementById(
+        "cancelChangePasswordBtn"
+      );
+
+      // Sidebar Navigation Elements
+      const sidebarMenuItems = document.querySelectorAll(
+        ".sidebar-menu .menu-item"
+      );
+      const softwareManagementContainer = document.getElementById(
+        "softwareManagementContainer"
+      );
+      const softwareListDiv = document.querySelector(".software-list");
+      const softwareFormDiv = document.querySelector(".software-form");
+      const userManagementSection = document.getElementById(
+        "user-management-section"
+      );
+      const settingsSection = document.getElementById("settings-section");
+      const reportsSection = document.getElementById("reports-section");
+
+      // Base URL for your API - *** IMPORTANT CHANGE FOR SEPARATE FOLDERS ***
+      // This MUST be the full URL to your backend server, including the port.
+      // During local development, keep it as localhost. For Render, update this.
+      const API_BASE_URL = "https://arcane-downloads.onrender.com/api/software";
+      const LOGIN_API_URL = "https://arcane-downloads.onrender.com/api/admin/login";
+      const CHANGE_PASSWORD_API_URL =
+        "https://arcane-downloads.onrender.com/api/admin/change-password";
+      const CHANGE_USERNAME_API_URL =
+        "https://arcane-downloads.onrender.com/api/admin/change-username";
+
+      // Current editing state
+      let isEditing = false;
+      // Changed currentEditId to hold MongoDB's _id
+      let currentEditId = null;
+
+      // Function to handle logout logic
+      function performLogout() {
+        sessionStorage.removeItem("isLoggedIn");
+        sessionStorage.removeItem("loggedInUsername");
+        loginPortal.style.display = "flex";
+        adminPanel.style.display = "none";
+        loginForm.reset();
+
+        // Reset editing state for software form
+        isEditing = false;
+        currentEditId = null;
+        softwareForm.reset();
+        formTitle.textContent = "Forge New Artifact";
+        submitBtn.textContent = "Conjure Artifact";
+        // Reset display type to icon and hide image URL input
+        displayTypeIcon.checked = true;
+        toggleImageInputs();
+
+        // Reset Account Settings forms
+        changeUsernameForm.reset();
+        changePasswordForm.reset();
+
+        // Reset sidebar active state and visible sections
+        sidebarMenuItems.forEach((i) => i.classList.remove("active"));
+        document
+          .querySelector('.menu-item[data-target="software-management"]')
+          .classList.add("active");
+
+        hideAllContentSections();
+        softwareManagementContainer.style.display = "flex";
+        softwareListDiv.style.display = "block";
+        softwareFormDiv.style.display = "block";
+        renderSoftwareList();
+      }
+
+      // Helper to hide all main content sections
+      function hideAllContentSections() {
+        softwareManagementContainer.style.display = "none";
+        softwareListDiv.style.display = "none";
+        softwareFormDiv.style.display = "none";
+        accountSettingsSection.style.display = "none";
+        userManagementSection.style.display = "none";
+        settingsSection.style.display = "none";
+        reportsSection.style.display = "none";
+      }
+
+      // Function to toggle visibility of icon and image URL inputs
+      function toggleImageInputs() {
+        if (displayTypeIcon.checked) {
+          iconSelectionGroup.style.display = "flex";
+          imageUrlGroup.style.display = "none";
+          imageUrlInput.value = ""; // Clear image URL when switching to icon
+          iconSelect.setAttribute("required", "required");
+          imageUrlInput.removeAttribute("required");
+        } else {
+          iconSelectionGroup.style.display = "none";
+          imageUrlGroup.style.display = "flex";
+          iconSelect.value = "fa-book"; // Reset icon when switching to image
+          iconSelect.removeAttribute("required");
+          imageUrlInput.setAttribute("required", "required");
+        }
+      }
+
+      // Event listeners for display type radio buttons
+      displayTypeIcon.addEventListener("change", toggleImageInputs);
+      displayTypeImage.addEventListener("change", toggleImageInputs);
+
+      // Initialize on DOMContentLoaded
+      document.addEventListener("DOMContentLoaded", () => {
+        // Check if user is already logged in (from previous session)
+        if (sessionStorage.getItem("isLoggedIn") === "true") {
+          loginPortal.style.display = "none";
+          adminPanel.style.display = "block";
+          document
+            .querySelector('.menu-item[data-target="software-management"]')
+            .classList.add("active");
+          softwareManagementContainer.style.display = "flex";
+          softwareListDiv.style.display = "block";
+          softwareFormDiv.style.display = "block";
+          renderSoftwareList();
+          // Pre-fill username in account settings forms
+          const storedUsername = sessionStorage.getItem("loggedInUsername");
+          if (storedUsername) {
+            currentUsernameChangeInput.value = storedUsername;
+            usernameForPasswordChangeInput.value = storedUsername;
+          }
+        } else {
+          loginPortal.style.display = "flex";
+          adminPanel.style.display = "none";
+        }
+
+        // Initialize display type visibility
+        toggleImageInputs();
+        createFloatingIcons();
+      });
+
+      // Login Form Submission
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        try {
+          const response = await fetch(LOGIN_API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+          });
+
+          if (response.ok) {
+            sessionStorage.setItem("isLoggedIn", "true");
+            sessionStorage.setItem("loggedInUsername", username);
+            loginPortal.style.display = "none";
+            adminPanel.style.display = "block";
+
+            const portalEffect = document.createElement("div");
+            portalEffect.style.position = "fixed";
+            portalEffect.style.top = "0";
+            portalEffect.style.left = "0";
+            portalEffect.style.width = "100%";
+            portalEffect.style.height = "100%";
+            portalEffect.style.background =
+              "radial-gradient(circle, rgba(212, 175, 55, 0.5) 0%, transparent 70%)";
+            portalEffect.style.zIndex = "9999";
+            portalEffect.style.opacity = "1";
+            portalEffect.style.transition = "opacity 1s ease-out";
+            document.body.appendChild(portalEffect);
+
+            setTimeout(() => {
+              portalEffect.style.opacity = "0";
+              setTimeout(() => {
+                portalEffect.remove();
+              }, 1000);
+            }, 500);
+
+            renderSoftwareList();
+            currentUsernameChangeInput.value = username;
+            usernameForPasswordChangeInput.value = username;
+          } else {
+            const errorData = await response.json();
+            showModal(
+              errorData.message ||
+                "Invalid mystic credentials! The portal remains sealed.",
+              "error"
+            );
+          }
+        } catch (error) {
+          console.error("Login request failed:", error);
+          showModal(
+            "Failed to connect to the authentication server. Please check the backend.",
+            "error"
+          );
+        }
+      });
+
+      logoutBtn.addEventListener("click", performLogout);
+
+      softwareForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("name").value;
+        const description = document.getElementById("description").value;
+        const downloadUrl = downloadUrlInput.value;
+        const imageType = document.querySelector('input[name="imageType"]:checked').value;
+        const icon = iconSelect.value;
+        const imageUrl = imageUrlInput.value;
+        const color = document.getElementById("color").value;
+
+        const softwareData = { name, description, downloadUrl, imageType, color };
+
+        if (imageType === 'icon') {
+            softwareData.icon = icon;
+            softwareData.imageUrl = ''; // Ensure imageUrl is empty if type is icon
+        } else {
+            softwareData.imageUrl = imageUrl;
+            softwareData.icon = ''; // Ensure icon is empty if type is image
+        }
+
+        let response;
+
+        try {
+          if (isEditing) {
+            // Use currentEditId (MongoDB _id) for PUT request
+            response = await fetch(`${API_BASE_URL}/${currentEditId}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(softwareData),
+            });
+          } else {
+            // For POST, Mongoose will generate _id automatically
+            response = await fetch(API_BASE_URL, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(softwareData),
+            });
+          }
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+              `HTTP error! status: ${response.status} - ${errorText}`
+            );
+          }
+
+          const result = await response.json();
+          console.log(result.message, result.software);
+
+          softwareForm.reset();
+          isEditing = false;
+          currentEditId = null;
+          formTitle.textContent = "Forge New Artifact";
+          submitBtn.textContent = "Conjure Artifact";
+          displayTypeIcon.checked = true; // Reset to default icon selection
+          toggleImageInputs(); // Update visibility based on reset
+
+          renderSoftwareList();
+
+          createMagicEffect(submitBtn, isEditing ? "updated" : "created");
+        } catch (error) {
+          console.error("Error submitting software form:", error);
+          showModal(
+            `Failed to ${isEditing ? "update" : "add"} artifact: ${
+              error.message
+            }`,
+            "error"
+          );
+        }
+      });
+
+      cancelBtn.addEventListener("click", () => {
+        softwareForm.reset();
+        isEditing = false;
+        currentEditId = null;
+        formTitle.textContent = "Forge New Artifact";
+        submitBtn.textContent = "Conjure Artifact";
+        displayTypeIcon.checked = true; // Reset to default icon selection
+        toggleImageInputs(); // Update visibility based on reset
+      });
+
+      // Render Software List (Fetches from API)
+      async function renderSoftwareList() {
+        console.log("Attempting to render software list...");
+        softwareItems.innerHTML = "<p>Loading magical artifacts...</p>";
+        try {
+          console.log(`Fetching software from: ${API_BASE_URL}`);
+          const response = await fetch(API_BASE_URL);
+          console.log("Fetch response received:", response);
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error(
+              `Error response from API: ${response.status} - ${errorText}`
+            );
+            throw new Error(
+              `HTTP error! status: ${response.status} - ${errorText}`
+            );
+          }
+
+          const softwareData = await response.json();
+          console.log("Software data received:", softwareData);
+
+          softwareItems.innerHTML = "";
+
+          if (softwareData.length === 0) {
+            softwareItems.innerHTML =
+              "<p>No magical artifacts found. Forge a new one!</p>";
+            console.log("No artifacts found, displaying empty message.");
+            return;
+          }
+
+          softwareData.forEach((software) => {
+            const item = document.createElement("div");
+            item.className = "software-item";
+
+            // Determine display content based on imageType
+            let displayContent = '';
+            if (software.imageType === 'image' && software.imageUrl) {
+                displayContent = `<img src="${software.imageUrl}" alt="${software.name}" style="width: 50px; height: 50px; border-radius: 5px; object-fit: cover;">`;
+            } else if (software.icon) {
+                displayContent = `<i class="fas ${software.icon}" style="font-size: 2.5rem; color: var(--glow-blue);"></i>`;
+            } else {
+                displayContent = `<i class="fas fa-box" style="font-size: 2.5rem; color: var(--glow-blue);"></i>`; // Fallback icon
+            }
+
+            item.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            ${displayContent}
+                            <div class="software-info">
+                                <h3>${software.name}</h3>
+                                <p>${software.description.substring(0, 70)}...</p>
+                                ${
+                                  software.downloadUrl
+                                    ? `<p>Download: <a href="${software.downloadUrl}" target="_blank" style="color: var(--light-blue); text-decoration: underline;">Link</a></p>`
+                                    : ""
+                                }
+                            </div>
+                        </div>
+                        <div class="software-actions">
+                            <!-- Use software._id for data-id -->
+                            <button class="action-btn edit-btn" data-id="${
+                              software._id
+                            }">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <!-- Use software._id for data-id -->
+                            <button class="action-btn delete-btn" data-id="${
+                              software._id
+                            }">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+            softwareItems.appendChild(item);
+          });
+          console.log("Artifacts successfully rendered.");
+
+          document.querySelectorAll(".edit-btn").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+              const id = e.currentTarget.getAttribute("data-id");
+              editSoftware(id);
+            });
+          });
+
+          document.querySelectorAll(".delete-btn").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+              const id = e.currentTarget.getAttribute("data-id");
+              const elementForEffect = e.currentTarget; // Capture the element *before* async operations
+
+              showModal(
+                "Are you sure you want to banish this artifact from the realm?",
+                "confirm",
+                async () => {
+                  // Use the captured element for the effect
+                  if (elementForEffect) {
+                    createMagicEffect(elementForEffect, "deleted");
+                  } else {
+                    console.warn(
+                      "Could not create magic effect: element for effect was null/undefined."
+                    );
+                  }
+
+                  try {
+                    const deleteResponse = await fetch(
+                      `${API_BASE_URL}/${id}`,
+                      {
+                        method: "DELETE",
+                      }
+                    );
+                    if (!deleteResponse.ok) {
+                      const errorText = await deleteResponse.text();
+                      throw new Error(
+                        `HTTP error! status: ${deleteResponse.status} - ${errorText}`
+                      );
+                    }
+                    const result = await deleteResponse.json();
+                    console.log(result.message);
+                    renderSoftwareList();
+                  } catch (error) {
+                    console.error("Error deleting software:", error);
+                    showModal(
+                      `Failed to banish artifact: ${error.message}`,
+                      "error"
+                    );
+                  }
+                }
+              );
+            });
+          });
+        } catch (error) {
+          console.error("Error fetching or rendering software data:", error);
+          softwareItems.innerHTML = `<p style="color: var(--dragon-color);">Failed to load artifacts. Please check the server connection and ensure CORS is enabled on the backend.</p>`;
+          showModal(
+            `Failed to load artifacts: ${
+              error.message
+            }. Please ensure the Node.js backend server is running on ${
+              new URL(API_BASE_URL).origin
+            } and accessible.`,
+            "error"
+          );
+        }
+      }
+
+      // Edit Software
+      async function editSoftware(id) {
+        // id here is MongoDB's _id
+        console.log(`Attempting to edit software with ID: ${id}`);
+        try {
+          const allSoftwareResponse = await fetch(API_BASE_URL);
+          if (!allSoftwareResponse.ok) {
+            const errorText = await allSoftwareResponse.text();
+            throw new Error(
+              `HTTP error! status: ${allSoftwareResponse.status} - ${errorText}`
+            );
+          }
+          const allSoftwareData = await allSoftwareResponse.json();
+          // Find by _id
+          const fullSoftwareDetails = allSoftwareData.find(
+            (item) => item._id === id
+          );
+
+          if (fullSoftwareDetails) {
+            // Populate with _id
+            document.getElementById("softwareId").value =
+              fullSoftwareDetails._id;
+            document.getElementById("name").value = fullSoftwareDetails.name;
+            document.getElementById("description").value =
+              fullSoftwareDetails.description;
+            downloadUrlInput.value = fullSoftwareDetails.downloadUrl || "";
+            document.getElementById("color").value = fullSoftwareDetails.color;
+
+            // Set image type and associated fields
+            if (fullSoftwareDetails.imageType === 'image') {
+                displayTypeImage.checked = true;
+                imageUrlInput.value = fullSoftwareDetails.imageUrl || "";
+                iconSelect.value = "fa-book"; // Reset icon value, as it's not used
+            } else {
+                displayTypeIcon.checked = true;
+                iconSelect.value = fullSoftwareDetails.icon || "fa-book";
+                imageUrlInput.value = ""; // Clear image URL value, as it's not used
+            }
+            toggleImageInputs(); // Ensure correct visibility
+
+            isEditing = true;
+            currentEditId = id; // Set currentEditId to _id
+            formTitle.textContent = "Reforge Artifact";
+            submitBtn.textContent = "Update Artifact";
+
+            document
+              .querySelector(".software-form")
+              .scrollIntoView({ behavior: "smooth" });
+            console.log(`Software with ID ${id} loaded into form for editing.`);
+          } else {
+            console.warn(
+              `Software with ID ${id} not found in fetched data for editing.`
+            );
+            showModal("Artifact not found for editing.", "error");
+          }
+        } catch (error) {
+          console.error("Error loading software for edit:", error);
+          showModal(
+            `Failed to load artifact for editing: ${error.message}`,
+            "error"
+          );
+        }
+      }
+
+      // Create Magic Effect (visual feedback for actions)
+      function createMagicEffect(element, action) {
+        const rect = element.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+
+        const effect = document.createElement("div");
+        effect.style.position = "fixed";
+        effect.style.top = `${y}px`;
+        effect.style.left = `${x}px`;
+        effect.style.width = "0";
+        effect.style.height = "0";
+        effect.style.borderRadius = "50%";
+        // Choose color based on action type
+        effect.style.backgroundColor =
+          action === "deleted"
+            ? "rgba(244, 67, 54, 0.3)"
+            : "rgba(74, 90, 154, 0.3)";
+        effect.style.boxShadow = "0 0 20px var(--glow-blue)";
+        effect.style.transform = "translate(-50%, -50%)";
+        effect.style.zIndex = "1000";
+        effect.style.transition = "all 0.5s ease-out";
+
+        document.body.appendChild(effect);
+
+        // Trigger animation
+        setTimeout(() => {
+          effect.style.width = "200px";
+          effect.style.height = "200px";
+          effect.style.opacity = "0";
+        }, 10);
+
+        // Clean up after animation
+        setTimeout(() => {
+          effect.remove();
+        }, 600);
+      }
+
+      // Create Floating Fantasy Icons (decorative background)
+      function createFloatingIcons() {
+        const icons = [
+          { class: "spell", icon: "fa-book" },
+          { class: "spell", icon: "fa-scroll" },
+          { class: "crystal", icon: "fa-ring" },
+          { class: "potion", icon: "fa-flask" },
+          { class: "dragon", icon: "fa-dragon" },
+          { class: "rune", icon: "fa-ghost" },
+          { class: "magic", icon: "fa-hat-wizard" },
+          { class: "spell", icon: "fa-wand-magic" },
+          { class: "crystal", icon: "fa-gem" },
+          { class: "dragon", icon: "fa-fire" },
+          { class: "rune", icon: "fa-shield-halved" },
+          { class: "magic", icon: "fa-wand-sparkles" },
+        ];
+
+        // Create 10 floating icons with staggered animation
+        for (let i = 0; i < 10; i++) {
+          setTimeout(() => {
+            const iconType = icons[Math.floor(Math.random() * icons.length)];
+            const icon = document.createElement("div");
+            icon.className = `floating-icon ${iconType.class}`;
+
+            // Random position along the bottom
+            const left = Math.random() * 100;
+            icon.style.left = `${left}vw`;
+            icon.style.bottom = "-50px";
+
+            // Random size
+            const size = 20 + Math.random() * 30;
+            icon.style.fontSize = `${size}px`;
+
+            // Create the icon element
+            const iconElement = document.createElement("i");
+            iconElement.className = `fas ${iconType.icon}`;
+            icon.appendChild(iconElement);
+
+            floatingIcons.appendChild(icon);
+
+            // Remove icon after animation completes
+            setTimeout(() => {
+              icon.remove();
+            }, 60000); // Match the longest animation duration
+          }, Math.random() * 30000); // Stagger creation
+        }
+      }
+
+      // Initialize floating icons and keep creating them
+      createFloatingIcons();
+      setInterval(createFloatingIcons, 30000); // Create new batch every 30 seconds
+
+      // Sidebar Navigation Logic
+      sidebarMenuItems.forEach((item) => {
+        item.addEventListener("click", () => {
+          const target = item.getAttribute("data-target");
+
+          sidebarMenuItems.forEach((i) => i.classList.remove("active"));
+          item.classList.add("active");
+
+          hideAllContentSections();
+
+          if (target === "logout") {
+            performLogout();
+          } else if (target === "software-management") {
+            softwareManagementContainer.style.display = "flex";
+            softwareListDiv.style.display = "block";
+            softwareFormDiv.style.display = "block";
+            renderSoftwareList();
+          } else if (target === "account-settings") {
+            accountSettingsSection.style.display = "block";
+            const loggedInUsername = sessionStorage.getItem("loggedInUsername");
+            if (loggedInUsername) {
+              currentUsernameChangeInput.value = loggedInUsername;
+              usernameForPasswordChangeInput.value = loggedInUsername;
+            }
+            passwordForUsernameChangeInput.value = "";
+            newUsernameInput.value = "";
+            currentPasswordInput.value = "";
+            newPasswordInput.value = "";
+            confirmNewPasswordInput.value = "";
+          } else if (target === "user-management") {
+            userManagementSection.style.display = "block";
+            showModal(
+              `Navigating to ${target.replace(
+                "-",
+                " "
+              )}. Content not implemented yet.`,
+              "info"
+            );
+          } else if (target === "settings") {
+            settingsSection.style.display = "block";
+            showModal(
+              `Navigating to ${target.replace(
+                "-",
+                " "
+              )}. Content not implemented yet.`,
+              "info"
+            );
+          } else if (target === "reports") {
+            reportsSection.style.display = "block";
+            showModal(
+              `Navigating to ${target.replace(
+                "-",
+                " "
+              )}. Content not implemented yet.`,
+              "info"
+            );
+          }
+        });
+      });
+
+      changeUsernameForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const currentUsername = currentUsernameChangeInput.value;
+        const password = passwordForUsernameChangeInput.value;
+        const newUsername = newUsernameInput.value;
+
+        if (!currentUsername || !password || !newUsername) {
+          showModal("All fields are required for username change.", "error");
+          return;
+        }
+        if (currentUsername === newUsername) {
+          showModal(
+            "New username cannot be the same as the current username.",
+            "error"
+          );
+          return;
+        }
+
+        try {
+          console.log("Sending change username request:", {
+            currentUsername,
+            newUsername,
+          });
+          const response = await fetch(CHANGE_USERNAME_API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ currentUsername, password, newUsername }),
+          });
+          console.log("Change username response:", response);
+
+          if (response.ok) {
+            showModal(
+              "Username updated successfully! Please log in again with your new username.",
+              "info"
+            );
+            performLogout();
+          } else {
+            const errorData = await response.json();
+            console.error("Change username error data:", errorData);
+            showModal(
+              errorData.message || "Failed to change username.",
+              "error"
+            );
+          }
+        } catch (error) {
+          console.error("Error changing username:", error);
+          showModal(
+            "Failed to connect to the server for username change. Please check your backend.",
+            "error"
+          );
+        }
+      });
+
+      cancelChangeUsernameBtn.addEventListener("click", () => {
+        changeUsernameForm.reset();
+        const loggedInUsername = sessionStorage.getItem("loggedInUsername");
+        if (loggedInUsername) {
+          currentUsernameChangeInput.value = loggedInUsername;
+        }
+        passwordForUsernameChangeInput.value = "";
+        newUsernameInput.value = "";
+      });
+
+      changePasswordForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const username = usernameForPasswordChangeInput.value;
+        const currentPassword = currentPasswordInput.value;
+        const newPassword = newPasswordInput.value;
+        const confirmNewPassword = confirmNewPasswordInput.value;
+
+        if (
+          !username ||
+          !currentPassword ||
+          !newPassword ||
+          !confirmNewPassword
+        ) {
+          showModal("All fields are required for password change.", "error");
+          return;
+        }
+        if (newPassword !== confirmNewPassword) {
+          showModal("New password and confirm password do not match!", "error");
+          return;
+        }
+        if (newPassword.length < 8) {
+          showModal(
+            "New password must be at least 8 characters long.",
+            "error"
+          );
+          return;
+        }
+
+        try {
+          console.log("Sending change password request:", {
+            username,
+            newPassword,
+          });
+          const response = await fetch(CHANGE_PASSWORD_API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, currentPassword, newPassword }),
+          });
+          console.log("Change password response:", response);
+
+          if (response.ok) {
+            showModal(
+              "Password updated successfully! Please log in again with your new password.",
+              "info"
+            );
+            performLogout();
+          } else {
+            const errorData = await response.json();
+            console.error("Change password error data:", errorData);
+            showModal(
+              errorData.message || "Failed to change password.",
+              "error"
+            );
+          }
+        } catch (error) {
+          console.error("Error changing password:", error);
+          showModal(
+            "Failed to connect to the server for password change. Please check your backend.",
+            "error"
+          );
+        }
+      });
+
+      cancelChangePasswordBtn.addEventListener("click", () => {
+        changePasswordForm.reset();
+        const loggedInUsername = sessionStorage.getItem("loggedInUsername");
+        if (loggedInUsername) {
+          usernameForPasswordChangeInput.value = loggedInUsername;
+        }
+        currentPasswordInput.value = "";
+        newPasswordInput.value = "";
+        confirmNewPasswordInput.value = "";
+      });
+
+      // Custom Modal for alerts and confirmations (replaces alert() and confirm())
+      function showModal(message, type, callback = null) {
+        const existingModal = document.getElementById("customModal");
+        if (existingModal) existingModal.remove();
+
+        const modalContainer = document.createElement("div");
+        modalContainer.id = "customModal";
+        modalContainer.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10001;
+                backdrop-filter: blur(3px);
+            `;
+
+        const modalContent = document.createElement("div");
+        modalContent.style.cssText = `
+                background: linear-gradient(to bottom right, var(--deep-blue), var(--mystic-blue));
+                padding: 2rem;
+                border-radius: 10px;
+                box-shadow: 0 0 20px rgba(74, 90, 154, 0.7);
+                border: 1px solid var(--glow-blue);
+                color: var(--pale-blue);
+                text-align: center;
+                max-width: 400px;
+                width: 90%;
+            `;
+
+        const modalMessage = document.createElement("p");
+        modalMessage.textContent = message;
+        modalMessage.style.cssText = `
+                margin-bottom: 1.5rem;
+                font-size: 1.1rem;
+                line-height: 1.5;
+            `;
+
+        modalContent.appendChild(modalMessage);
+
+        if (type === "confirm") {
+          const buttonContainer = document.createElement("div");
+          buttonContainer.style.cssText = `
+                    display: flex;
+                    justify-content: center;
+                    gap: 1rem;
+                `;
+
+          const confirmBtn = document.createElement("button");
+          confirmBtn.textContent = "Confirm";
+          confirmBtn.style.cssText = `
+                    padding: 0.7rem 1.5rem;
+                    background: linear-gradient(to right, var(--crystal-blue), var(--glow-blue));
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-size: 1rem;
+                    transition: all 0.3s ease;
+                `;
+          confirmBtn.onmouseover = () =>
+            (confirmBtn.style.transform = "translateY(-2px)");
+          confirmBtn.onmouseout = () =>
+            (confirmBtn.style.transform = "translateY(0)");
+          confirmBtn.onclick = () => {
+            if (callback) callback();
+            modalContainer.remove();
+          };
+          buttonContainer.appendChild(confirmBtn);
+
+          const cancelBtn = document.createElement("button");
+          cancelBtn.textContent = "Cancel";
+          cancelBtn.style.cssText = `
+                    padding: 0.7rem 1.5rem;
+                    background-color: var(--dark-blue);
+                    color: var(--pale-blue);
+                    border: 1px solid var(--glow-blue);
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-size: 1rem;
+                    transition: all 0.3s ease;
+                `;
+          cancelBtn.onmouseover = () =>
+            (cancelBtn.style.background = "var(--mystic-blue)");
+          cancelBtn.onmouseout = () =>
+            (cancelBtn.style.background = "var(--dark-blue)");
+          cancelBtn.onclick = () => modalContainer.remove();
+          buttonContainer.appendChild(cancelBtn);
+
+          modalContent.appendChild(buttonContainer);
+        } else {
+          // For 'alert' or 'info' type
+          const okBtn = document.createElement("button");
+          okBtn.textContent = "OK";
+          okBtn.style.cssText = `
+                    padding: 0.7rem 1.5rem;
+                    background: linear-gradient(to right, var(--mystic-blue), var(--crystal-blue));
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-size: 1rem;
+                    transition: all 0.3s ease;
+                `;
+          okBtn.onmouseover = () =>
+            (okBtn.style.transform = "translateY(-2px)");
+          okBtn.onmouseout = () => (okBtn.style.transform = "translateY(0)");
+          okBtn.onclick = () => modalContainer.remove();
+          modalContent.appendChild(okBtn);
+        }
+
+        modalContainer.appendChild(modalContent);
+        document.body.appendChild(modalContainer);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arcane Downloads | Fantasy Games & Software</title>
+    <link rel="icon" type="image/png" href="assets/castle.png">
+    <style>
+      :root {
+        --dark-blue: #0a1128;
+        --medium-blue: #1a2a57;
+        --light-blue: #3a7ca5;
+        --accent-blue: #2f6690;
+        --glow-blue: #4cc9f0;
+        --text-light: #d9dcd6;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Cinzel", serif;
+      }
+
+      @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&display=swap");
+
+      body {
+        background-color: var(--dark-blue);
+        color: var(--text-light);
+        overflow-x: hidden;
+        position: relative;
+        min-height: 100vh;
+      }
+
+      .particle {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        opacity: 0.7;
+        filter: drop-shadow(0 0 5px var(--glow-blue));
+        z-index: 1;
+      }
+
+      .stars {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+      }
+
+      .star {
+        position: absolute;
+        background-color: white;
+        border-radius: 50%;
+        animation: twinkle 2s infinite alternate;
+      }
+
+      @keyframes twinkle {
+        0% {
+          opacity: 0.2;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      .container {
+        position: relative;
+        z-index: 2;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem 0;
+        margin-bottom: 2rem;
+      }
+
+      .logo {
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--text-light);
+        text-shadow: 0 0 15px var(--glow-blue);
+        letter-spacing: 3px;
+        text-align: center;
+      }
+
+      .logo span {
+        color: var(--glow-blue);
+      }
+
+      .hero {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 2rem 0;
+      }
+
+      .hero h1 {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 0 15px var(--glow-blue);
+        letter-spacing: 3px;
+      }
+
+      .hero p {
+        font-size: 1.5rem;
+        max-width: 800px;
+        margin-bottom: 3rem;
+        line-height: 1.6;
+      }
+
+      .cta-button {
+        background: linear-gradient(
+          135deg,
+          var(--light-blue),
+          var(--accent-blue)
+        );
+        color: var(--text-light);
+        border: none;
+        padding: 1rem 2.5rem;
+        font-size: 1.2rem;
+        font-weight: 700;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 15px rgba(76, 201, 240, 0.5);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+      }
+
+      .cta-button:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0 25px rgba(76, 201, 240, 0.8);
+      }
+
+      .cta-button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: all 0.5s ease;
+        z-index: -1;
+      }
+
+      .cta-button:hover::before {
+        left: 100%;
+      }
+
+      footer {
+        text-align: center;
+        padding: 2rem 0;
+        margin-top: 2rem;
+      }
+
+      /* Decorative fantasy corner elements */
+      .corner-decoration {
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        opacity: 0.3;
+        z-index: 1;
+      }
+
+      .top-left {
+        top: 20px;
+        left: 20px;
+        background-image: url("assets/corner-1.png");
+      }
+
+      .top-right {
+        top: 20px;
+        right: 20px;
+        background-image: url("assets/corner-2.png");
+        transform: rotate(90deg);
+      }
+
+      .bottom-left {
+        bottom: 20px;
+        left: 20px;
+        background-image: url("assets/corner-3.png");
+        transform: rotate(270deg);
+      }
+
+      .bottom-right {
+        bottom: 20px;
+        right: 20px;
+        background-image: url("assets/corner-4.png");
+        transform: rotate(180deg);
+      }
+
+      @media (max-width: 992px) {
+        .hero h1 {
+          font-size: 3rem;
+        }
+
+        .hero p {
+          font-size: 1.2rem;
+        }
+
+        .corner-decoration {
+          width: 100px;
+          height: 100px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .logo {
+          font-size: 2.5rem;
+        }
+
+        .hero h1 {
+          font-size: 2.5rem;
+        }
+
+        .hero p {
+          font-size: 1.1rem;
+        }
+
+        .cta-button {
+          padding: 0.8rem 2rem;
+          font-size: 1rem;
+        }
+
+        .corner-decoration {
+          width: 80px;
+          height: 80px;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .logo {
+          font-size: 2rem;
+        }
+
+        .hero h1 {
+          font-size: 2rem;
+        }
+
+        .hero p {
+          font-size: 1rem;
+        }
+
+        .corner-decoration {
+          width: 60px;
+          height: 60px;
+          opacity: 0.2;
+        }
+      }
+
+      /* Animation for floating icons */
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-20px) rotate(5deg);
+        }
+      }
+
+      /* Specific animations for different icons */
+      .sword {
+        animation: float 4s ease-in-out infinite;
+      }
+
+      .shield {
+        animation: float 5s ease-in-out infinite 1s;
+      }
+
+      .staff {
+        animation: float 6s ease-in-out infinite 0.5s;
+      }
+
+      .potion {
+        animation: float 3.5s ease-in-out infinite 0.7s;
+      }
+
+      .scroll {
+        animation: float 5.5s ease-in-out infinite 0.3s;
+      }
+
+      .dragon {
+        animation: float 7s ease-in-out infinite;
+      }
+
+      .rune {
+        animation: float 4s ease-in-out infinite 0.2s;
+      }
+
+      .crystal {
+        animation: float 5s ease-in-out infinite 0.4s;
+      }
+
+      .helm {
+        animation: float 6s ease-in-out infinite 0.6s;
+      }
+
+      .book {
+        animation: float 4.5s ease-in-out infinite 0.8s;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stars" id="stars"></div>
+
+    <!-- Corner decorations -->
+    <div class="corner-decoration top-left"></div>
+    <div class="corner-decoration top-right"></div>
+    <div class="corner-decoration bottom-left"></div>
+    <div class="corner-decoration bottom-right"></div>
+
+    <div class="container">
+      <header>
+        <div class="logo">Arcane<span>Downloads</span></div>
+      </header>
+
+      <section class="hero">
+        <h1>Unleash Your Digital Adventure</h1>
+        <p>
+          Discover the most enchanting games and powerful software in our
+          mystical collection. Download now and embark on an epic digital
+          journey.
+        </p>
+        <a href="home.html">
+          <button class="cta-button">Enter the Portal</button>
+        </a>
+      </section>
+
+      <footer>
+        <p>&copy; 2025 Arcane Downloads. All rights reserved.</p>
+      </footer>
+    </div>
+
+    <script>
+      // Create stars background
+      function createStars() {
+        const starsContainer = document.getElementById("stars");
+        const starCount = 200;
+
+        for (let i = 0; i < starCount; i++) {
+          const star = document.createElement("div");
+          star.classList.add("star");
+
+          // Random position
+          const x = Math.random() * 100;
+          const y = Math.random() * 100;
+
+          // Random size
+          const size = Math.random() * 3;
+
+          // Random animation delay
+          const delay = Math.random() * 2;
+
+          star.style.left = `${x}%`;
+          star.style.top = `${y}%`;
+          star.style.width = `${size}px`;
+          star.style.height = `${size}px`;
+          star.style.animationDelay = `${delay}s`;
+
+          starsContainer.appendChild(star);
+        }
+      }
+
+      // Create floating fantasy icons
+      function createFloatingIcons() {
+        const allIcons = [
+          { name: "sword", file: "sword.png" },
+          { name: "potion", file: "potion.png" },
+          { name: "dragon", file: "dragon.png" },
+          { name: "rune", file: "rune.png" },
+          { name: "dark-elf", file: "dark-elf.png" },
+          { name: "door", file: "door.png" },
+          { name: "game", file: "game.png" },
+          { name: "magic-wand", file: "magic-wand.png" },
+          { name: "magic-book", file: "magic-book.png" },
+          { name: "spellbook", file: "spellbook.png" },
+          { name: "elixir", file: "elixir.png" },
+          { name: "banner", file: "banner.png" },
+          { name: "castle", file: "castle.png" },
+          { name: "assasin", file: "assasin.png" },
+          { name: "genie", file: "genie.png" },
+        ];
+
+        // Ensure iconCount does not exceed the number of available unique icons
+        const iconCount = Math.min(10, allIcons.length); // Max 10 icons, or fewer if not enough unique ones
+
+        // Create a shuffled copy of the icons array to pick unique icons
+        const shuffledIcons = [...allIcons].sort(() => 0.5 - Math.random());
+        const uniqueIcons = shuffledIcons.slice(0, iconCount);
+
+        uniqueIcons.forEach((iconData) => {
+          const icon = document.createElement("div");
+          icon.classList.add("particle");
+
+          // Add the specific class for animation
+          icon.classList.add(iconData.name);
+
+          // Set background image (assuming icons are in assets folder)
+          icon.style.backgroundImage = `url('assets/${iconData.file}')`;
+
+          // Random position
+          const x = Math.random() * 100;
+          const y = Math.random() * 100;
+
+          // Random size
+          const size = 20 + Math.random() * 60; // Increased max size
+
+          // Random rotation
+          const rotation = Math.random() * 360;
+
+          icon.style.left = `${x}vw`;
+          icon.style.top = `${y}vh`;
+          icon.style.width = `${size}px`;
+          icon.style.height = `${size}px`;
+          icon.style.transform = `rotate(${rotation}deg)`;
+
+          // Random animation duration
+          const duration = 3 + Math.random() * 6;
+          icon.style.animationDuration = `${duration}s`;
+
+          // Random opacity
+          const opacity = 0.4 + Math.random() * 0.5;
+          icon.style.opacity = opacity;
+
+          // Random z-index
+          const zIndex = Math.floor(Math.random() * 5) + 1;
+          icon.style.zIndex = zIndex;
+
+          document.body.appendChild(icon);
+        });
+      }
+
+      // Initialize on load
+      window.addEventListener("load", function () {
+        createStars();
+        createFloatingIcons();
+
+        // Add subtle pulse animation to the logo
+        const logo = document.querySelector(".logo");
+        setInterval(() => {
+          const glowIntensity = 10 + Math.random() * 10;
+          logo.style.textShadow = `0 0 ${glowIntensity}px var(--glow-blue)`;
+        }, 2000);
+      });
+
+      // Make icons responsive on resize
+      window.addEventListener("resize", function () {
+        const particles = document.querySelectorAll(".particle");
+        particles.forEach((particle) => {
+          // Adjust position based on new viewport size
+          const currentLeft = parseFloat(particle.style.left);
+          const currentTop = parseFloat(particle.style.top);
+
+          particle.style.left = `${(currentLeft / window.innerWidth) * 100}vw`;
+          particle.style.top = `${(currentTop / window.innerHeight) * 100}vh`;
+        });
+      });
+
+      // Add interactive effect when mouse moves
+      document.addEventListener("mousemove", function (e) {
+        const particles = document.querySelectorAll(".particle");
+        particles.forEach((particle) => {
+          const rect = particle.getBoundingClientRect();
+          const particleCenter = {
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2,
+          };
+
+          const distance = Math.sqrt(
+            Math.pow(e.clientX - particleCenter.x, 2) +
+              Math.pow(e.clientY - particleCenter.y, 2)
+          );
+
+          if (distance < 150) {
+            const angle = Math.atan2(
+              e.clientY - particleCenter.y,
+              e.clientX - particleCenter.x
+            );
+
+            const force = (150 - distance) / 30;
+            particle.style.transform = `translate(${
+              Math.cos(angle) * force
+            }px, ${Math.sin(angle) * force}px) rotate(${
+              Math.random() * 360
+            }deg)`;
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
